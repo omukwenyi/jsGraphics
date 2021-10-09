@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Graphing Home</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <div id="title">
+        <h5>Graphing</h5>
+        <div>
+            <nav>
+                <ol>
+                    <li><a href="index.html">Radial</a></li>
+                    <li><a href="tree.html">Binary Tree</a></li>
+                    <li><a href="pie.html">Pie Chart</a></li>
+                </ol>
+            </nav>
+        </div>
+
+        <div>
+            <label for="nodes">Nodes: </label>
+            <input name="nodes" type="range" id="nodes" min=0 max=121 value=1 style="width: 90%;">
+            <label for="nodes" id="nodes-output">1</label>
+        </div>
+    </div>
+    <canvas id="canvas" height="400" width="500"></canvas>
+    <script src="js/nodedata.js"></script>
+    <script src="js/tree.js"></script>
+</body>
+
+</html>

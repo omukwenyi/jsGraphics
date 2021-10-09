@@ -1,0 +1,8 @@
+{
+    "esversion":6,
+    "browser": true,
+    "moz": true,
+    "strict": "global",
+    "eqeqeq": false,
+    "varstmt": false
+}
