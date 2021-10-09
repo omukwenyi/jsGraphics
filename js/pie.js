@@ -57,9 +57,16 @@ function draw(nodes) {
           [cx + x2, cy + y2],
           p.fill
         );
-        drawSector(ctx, xpos, cy, radius, startAngle, radEnd, p.fill, p.fill);
 
-        drawLegend(ctx, cw-150, 55 + i * 20, 50, 22, p.fill, p.id, "black");
+        
+
+        drawSector(ctx, xpos, cy, radius, startAngle, radEnd, p.fill, p.fill);
+        console.log([x1, y1], [x2, y2]);
+        //drawCircle(ctx, (cx + (cx + x1 + cx + x2) / 2)/2, (cy + (cy + y1 + cy + y2) / 2)/2, 1);
+        let percent = parseInt(ratio*100) + "%";
+        drawValue(ctx, (cx + (cx + x1 + cx + x2) / 2)/2, (cy + (cy + y1 + cy + y2) / 2)/2, percent);
+
+        drawLegend(ctx, cw - 150, 55 + i * 20, 50, 22, p.fill, p.id, "black");
 
         startAngle += angle;
       }
@@ -68,8 +75,13 @@ function draw(nodes) {
   }
 }
 
+function drawValue(ctx, x, y, value) {
+  ctx.font = "bold 12px serif";
+  ctx.fillStyle = "black";
+  ctx.fillText(value, x, y);
+}
 function drawLegend(ctx, x, y, width, height, fill, label, labelFill) {
-//   console.log(x, y, x + width, y + height);
+  //   console.log(x, y, x + width, y + height);
   ctx.fillStyle = fill;
   ctx.fillRect(x, y, width, height);
 
