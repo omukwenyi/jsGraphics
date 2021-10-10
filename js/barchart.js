@@ -24,7 +24,8 @@ function draw(bars) {
     let baseY = ch - 75;
     let baseX = 100;
     let rightEdge = cw - 50;
-    drawLine(ctx, [baseX, 50], [baseX, baseY], "black", 5);
+    let yTop = 50;
+    drawLine(ctx, [baseX, yTop], [baseX, baseY], "black", 5);
     drawLine(ctx, [baseX, baseY], [rightEdge, baseY], "black", 5);
 
     if (bars > 0) {
@@ -34,13 +35,21 @@ function draw(bars) {
       const totalBarWidth = bars * barwidth;
       let gap = (xAxisWidth - totalBarWidth) / (bars + 1);
 
-      console.log("Gap:", gap, "X Width:", xAxisWidth);
+      let max = bchart[0].value;
+
+      bchart.forEach((item) => {
+        if (item.value > max) {
+          max = item.value;
+        }
+      });
+      console.log("Max:", max);
 
       for (let i = 0; i < bchart.length; i++) {
         const bar = bchart[i];
         let xpos = baseX + (i + 1) * gap + i * barwidth;
-        let ypos = baseY - bar.value;
-        drawRect(ctx, xpos, ypos, barwidth, bar.value, bar.fill);
+        let height = bar.value * ((baseY - yTop) / max);
+        let ypos = baseY - height;
+        drawRect(ctx, xpos, ypos, barwidth, height, bar.fill);
       }
     }
   }
