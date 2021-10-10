@@ -18,6 +18,7 @@ function draw(nodes) {
     const cy = ch / 2;
 
     drawGrid(ctx, cw, ch, 10, 0.2);
+    drawLine(ctx, [cx, 0], [cx, ch], "red", 2);
 
     let radius = Math.min(ch / 2, cw / 2) - 20;
 
@@ -38,7 +39,7 @@ function draw(nodes) {
         const p = pie[i];
         const ratio = p.value / sum;
         const angle = ratio * (Math.PI * 2);
-        const xpos = cx; //(i+1)*165;
+        const xpos = cx;
         // const degStart = (startAngle * 180) / Math.PI;
         // const degEnd = ((startAngle + angle) * 180) / Math.PI;
         const radEnd = angle + startAngle;
@@ -58,20 +59,24 @@ function draw(nodes) {
           p.fill
         );
 
-        
-
         drawSector(ctx, xpos, cy, radius, startAngle, radEnd, p.fill, p.fill);
-        console.log([x1, y1], [x2, y2]);
+        //console.log([x1, y1], [x2, y2]);
         //drawCircle(ctx, (cx + (cx + x1 + cx + x2) / 2)/2, (cy + (cy + y1 + cy + y2) / 2)/2, 1);
-        let percent = parseInt(ratio*100) + "%";
-        drawValue(ctx, (cx + (cx + x1 + cx + x2) / 2)/2, (cy + (cy + y1 + cy + y2) / 2)/2, percent);
+        let percent = parseFloat(ratio * 100).toFixed(1) + "%";
+        let valueXpos = (cx + (2 * cx + x1 + x2) / 2) / 2;
+        let valueYpos = (cy + (2 * cy + y1 + y2) / 2) / 2;
 
+        if (nodes == 2 && i == 0 && ratio > 0.5) {
+          drawValue(ctx, 2 * cx - valueXpos, 2 * cy - valueYpos, percent);
+        } else {
+          drawValue(ctx, valueXpos, valueYpos, percent);
+        }
         drawLegend(ctx, cw - 150, 55 + i * 20, 50, 22, p.fill, p.id, "black");
 
         startAngle += angle;
       }
     }
-    drawCircle(ctx, cx, cy, 1, "white", "white");
+    //drawCircle(ctx, cx, cy, 1, "white", "white");
   }
 }
 
@@ -90,13 +95,13 @@ function drawLegend(ctx, x, y, width, height, fill, label, labelFill) {
   ctx.fillText(label, x + width + 10, y + 0.8 * height);
 }
 
-function drawTriangle(ctx, pointA, pointB, pointC, fill) {
+function drawTriangle(ctx, pointA, pointB, pointC, fill, width = 1) {
   ctx.beginPath();
   ctx.moveTo(...pointA);
   ctx.lineTo(...pointB);
   ctx.lineTo(...pointC);
   ctx.fillStyle = fill;
-  ctx.lineWidth = 1;
+  ctx.lineWidth = width;
   ctx.strokeStyle = fill;
   ctx.stroke();
   ctx.fill();
@@ -162,7 +167,7 @@ function drawGrid(ctx, width, height, gap, lineWidth) {
   }
 }
 
-let r = 3; // slices
+let r = 2; // slices
 
 const controlOut = document.getElementById("nodes-output");
 const control = document.getElementById("nodes");
