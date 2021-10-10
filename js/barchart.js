@@ -20,39 +20,76 @@ function draw(bars) {
 
     drawGrid(ctx, cw, ch, 10, 0.2);
 
-    //Axiz
-    let baseY = ch - 75;
-    let baseX = 100;
-    let rightEdge = cw - 50;
-    let yTop = 50;
-    drawLine(ctx, [baseX, yTop], [baseX, baseY], "black", 5);
-    drawLine(ctx, [baseX, baseY], [rightEdge, baseY], "black", 5);
-
     if (bars > 0) {
+      //Axis
+      let baseY = ch - 75;
+      let baseX = 100;
+      let rightEdge = cw - 50;
+      let yTop = 50;
       const bchart = getBarChart(bars);
-      let barwidth = 50;
-      const xAxisWidth = rightEdge - baseX;
-      const totalBarWidth = bars * barwidth;
-      let gap = (xAxisWidth - totalBarWidth) / (bars + 1);
 
+      //X axis
+      drawLine(ctx, [baseX, yTop], [baseX, baseY], "black", 2);
+
+      //Y axis
       let max = bchart[0].value;
-
       bchart.forEach((item) => {
         if (item.value > max) {
           max = item.value;
         }
       });
-      console.log("Max:", max);
+
+      drawLine(ctx, [baseX, baseY], [rightEdge, baseY], "black", 2);
+
+      //Y axis ticks
+      let yAxisHeight = baseY - yTop - 20;
+      let ticks = 10;
+      let majorYRange = yAxisHeight / ticks;
+      let tickRange = max / ticks;
+
+      let rfactor = max < 1000 ? 10 : max < 10000 ? 100 : 1000;
+
+      let rt = Math.round(tickRange / rfactor) * rfactor;
+      let adRatio = rt / tickRange;
+
+      console.log("Max:", max, "R:", tickRange, "aR:", rt);
+
+      for (let y = 0; y <= ticks; y++) {
+        let tickYPos = baseY - y * majorYRange * adRatio;
+        let yValue = parseInt(y * rt).toLocaleString();
+        let ytext = ctx.measureText(yValue);
+        let textWidth = Math.ceil(ytext.width) + 15;
+
+        console.log("yval:", yValue, "W:", textWidth);
+        drawLine(ctx, [baseX - 10, tickYPos], [baseX, tickYPos], "red", 1);
+        drawValue(ctx, baseX - textWidth, tickYPos, yValue);
+      }
+
+      let barwidth = 50;
+      const xAxisWidth = rightEdge - baseX;
+      const totalBarWidth = bars * barwidth;
+      let gap = (xAxisWidth - totalBarWidth) / (bars + 1);
 
       for (let i = 0; i < bchart.length; i++) {
         const bar = bchart[i];
         let xpos = baseX + (i + 1) * gap + i * barwidth;
-        let height = bar.value * ((baseY - yTop) / max);
+        let height = bar.value * (yAxisHeight / max);
         let ypos = baseY - height;
         drawRect(ctx, xpos, ypos, barwidth, height, bar.fill);
+        drawValue(ctx, xpos+3, ypos-5, bar.value.toLocaleString());
+
+        //X axis label
+        drawValue(ctx, xpos+10, baseY + 15, bar.id);
+
       }
     }
   }
+}
+
+function drawValue(ctx, x, y, value) {
+  ctx.font = "bold 12px serif";
+  ctx.fillStyle = "black";
+  ctx.fillText(value, x, y);
 }
 
 function drawRect(ctx, x, y, width, height, fill) {
