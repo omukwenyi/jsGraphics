@@ -18,7 +18,7 @@ function draw(nodes) {
     const cy = ch / 2;
 
     drawGrid(ctx, cw, ch, 10, 0.2);
-    drawLine(ctx, [cx, 0], [cx, ch], "red", 2);
+    //drawLine(ctx, [cx, 0], [cx, ch], "red", 2);
 
     let radius = Math.min(ch / 2, cw / 2) - 20;
 
