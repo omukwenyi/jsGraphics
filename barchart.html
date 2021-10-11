@@ -15,17 +15,33 @@
             <nav>
                 <ol>
                     <li><a href="index.html">Radial</a></li>
-                    <li><a href="tree.html">Binary Tree</a></li>
+                    <li><a href="tree.html">Trees</a></li>
                     <li><a href="pie.html">Pie Chart</a></li>
                     <li><a href="barchart.html">Bar Chart</a></li>
                 </ol>
             </nav>
         </div>
 
-        <div>
+        <div class="row">
             <label for="nodes">Bars</label>
             <input name="nodes" type="range" id="nodes" min=1 max=25 value=2 style="width: 93%;">
             <label for="nodes" id="nodes-output">1</label>
+        </div>
+
+        <div id="chartoptions">
+            <div class="row">
+                <label for="colors">Different colored Bars</label>
+                <input type="checkbox" id="colors" checked>
+                <label for="showvalues">Show data values</label>
+                <input type="checkbox" id="showvalues" checked>
+            </div>
+
+            <div class="row">
+                <label for="xlabel">X Axis label</label>
+                <input type="text" id="xlabel">
+                <label for="ylabel">Y Axis label</label>
+                <input type="text" id="ylabel">
+            </div>
         </div>
     </div>
     <canvas id="canvas" height="400" width="500"></canvas>

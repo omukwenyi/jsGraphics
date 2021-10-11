@@ -22,10 +22,10 @@ function draw(bars) {
 
     if (bars > 0) {
       //Axis
-      let baseY = ch - 75;
+      let baseY = ch - 50;
       let baseX = 100;
       let rightEdge = cw - 50;
-      let yTop = 50;
+      let yTop = 25;
       const bchart = getBarChart(bars);
 
       //X axis
