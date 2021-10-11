@@ -1,6 +1,6 @@
 "use strict";
 
-function draw(bars) {
+function draw(bars, useColors=false) {
   console.clear();
   const canvas = document.querySelector("#canvas");
   const header = document.querySelector("#title");
@@ -26,7 +26,7 @@ function draw(bars) {
       let baseX = 100;
       let rightEdge = cw - 50;
       let yTop = 25;
-      const bchart = getBarChart(bars);
+      const bchart = getBarChart(bars, useColors);
 
       //X axis
       drawLine(ctx, [baseX, yTop], [baseX, baseY], "black", 2);
@@ -52,7 +52,7 @@ function draw(bars) {
       let rt = Math.round(tickRange / rfactor) * rfactor;
       let adRatio = rt / tickRange;
 
-      console.log("Max:", max, "R:", tickRange, "aR:", rt);
+      //console.log("Max:", max, "R:", tickRange, "aR:", rt);
 
       for (let y = 0; y <= ticks; y++) {
         let tickYPos = baseY - y * majorYRange * adRatio;
@@ -60,7 +60,7 @@ function draw(bars) {
         let ytext = ctx.measureText(yValue);
         let textWidth = Math.ceil(ytext.width) + 15;
 
-        console.log("yval:", yValue, "W:", textWidth);
+        //console.log("yval:", yValue, "W:", textWidth);
         drawLine(ctx, [baseX - 10, tickYPos], [baseX, tickYPos], "red", 1);
         drawValue(ctx, baseX - textWidth, tickYPos, yValue);
       }
@@ -125,13 +125,21 @@ function drawGrid(ctx, width, height, gap, lineWidth) {
   }
 }
 
+
 let r = 1; // slices
+
+const diffColors = document.getElementById("colors")
+diffColors.onclick = () => {
+    if(diffColors.checked){
+        draw(r, true);
+    }
+}
 
 const controlOut = document.getElementById("nodes-output");
 const control = document.getElementById("nodes");
 control.oninput = () => {
   controlOut.textContent = r = control.value;
-  draw(parseInt(r));
+  draw(parseInt(r), diffColors.checked);
 };
 
 window.onresize = () => {
@@ -142,7 +150,7 @@ window.onresize = () => {
   canvas.width = window.innerWidth - 50;
   canvas.height = window.innerHeight - headerHeight - 80;
 
-  draw(parseInt(r));
+  draw(parseInt(r), diffColors.checked);
 };
 
-draw(r);
+draw(r, diffColors.checked);

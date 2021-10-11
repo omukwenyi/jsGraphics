@@ -16,18 +16,44 @@ const months = [
   "May",
   "Jun",
   "Jul",
-  "Aug", "Sep","Oct","Nov", "Dec",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
 ];
-
-function getBarChart(n) {
+let colours = [
+  "black",
+  "OrangeRed",
+  "Khaki",
+  "orange",
+  "green",
+  "AliceBlue",
+  "blue",
+  "indigo",
+  "violet",
+  "fuchsia",
+  "Navy",
+  "DarkGreen",
+  "DarkSlateGray",
+  "Purple",
+  "Maroon",
+  "Gray",
+  "black",
+];
+function getBarChart(n, useColors = false) {
   const barchart = new Array(n);
 
   for (let bar = 0; bar < n; bar++) {
     let min = 100;
     let max = 10000;
     let value = parseInt(Math.random() * (max - min) + min);
-    let monIndex = 0;
-    barchart[bar] = new BarRecord(months[bar % 12], value, "orangered");
+    let colIndex = parseInt(bar % colours.length);
+    let colour = "orangered";
+    if (useColors) {
+        colour = colours[colIndex];
+    }
+    barchart[bar] = new BarRecord(months[bar % 12], value, colour);
   }
   return barchart;
 }
