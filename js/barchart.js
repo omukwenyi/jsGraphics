@@ -1,6 +1,6 @@
 "use strict";
 
-function draw(bars, useColors=false) {
+function draw(bars = 0, useColors = false) {
   console.clear();
   const canvas = document.querySelector("#canvas");
   const header = document.querySelector("#title");
@@ -15,8 +15,8 @@ function draw(bars, useColors=false) {
   if (canvas.getContext) {
     const ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, cw, ch);
-    const cx = cw / 2;
-    const cy = ch / 2;
+    // const cx = cw / 2;
+    // const cy = ch / 2;
 
     drawGrid(ctx, cw, ch, 10, 0.2);
 
@@ -68,19 +68,30 @@ function draw(bars, useColors=false) {
       let barwidth = 50;
       const xAxisWidth = rightEdge - baseX;
       const totalBarWidth = bars * barwidth;
-      let gap = (xAxisWidth - totalBarWidth) / (bars + 1);
+      let gap = (xAxisWidth - totalBarWidth) / (parseInt(bars) + 1);
 
+      console.log(
+        "N:",
+        bars + 1,
+        "xw:",
+        xAxisWidth,
+        "tw:",
+        totalBarWidth,
+        "diff",
+        xAxisWidth - totalBarWidth,
+        "gap:",
+        gap
+      );
       for (let i = 0; i < bchart.length; i++) {
         const bar = bchart[i];
         let xpos = baseX + (i + 1) * gap + i * barwidth;
         let height = bar.value * (yAxisHeight / max);
         let ypos = baseY - height;
         drawRect(ctx, xpos, ypos, barwidth, height, bar.fill);
-        drawValue(ctx, xpos+3, ypos-5, bar.value.toLocaleString());
+        drawValue(ctx, xpos + 3, ypos - 5, bar.value.toLocaleString());
 
         //X axis label
-        drawValue(ctx, xpos+10, baseY + 15, bar.id);
-
+        drawValue(ctx, xpos + 10, baseY + 15, bar.id);
       }
     }
   }
@@ -95,10 +106,6 @@ function drawValue(ctx, x, y, value) {
 function drawRect(ctx, x, y, width, height, fill) {
   ctx.fillStyle = fill;
   ctx.fillRect(x, y, width, height);
-
-  // ctx.font = "bold 12px serif";
-  // ctx.fillStyle = labelFill;
-  // ctx.fillText(label, x + width + 10, y + 0.8 * height);
 }
 
 function drawLine(ctx, begin, end, stroke = "black", width = 1) {
@@ -125,15 +132,12 @@ function drawGrid(ctx, width, height, gap, lineWidth) {
   }
 }
 
-
 let r = 1; // slices
 
-const diffColors = document.getElementById("colors")
+const diffColors = document.getElementById("colors");
 diffColors.onclick = () => {
-    if(diffColors.checked){
-        draw(r, true);
-    }
-}
+  draw(parseInt(r), diffColors.checked);
+};
 
 const controlOut = document.getElementById("nodes-output");
 const control = document.getElementById("nodes");
@@ -153,4 +157,4 @@ window.onresize = () => {
   draw(parseInt(r), diffColors.checked);
 };
 
-draw(r, diffColors.checked);
+draw(parseInt(r), diffColors.checked);
