@@ -18,8 +18,15 @@ class TMember {
 }
 
 class GraphNode {
-    constructor(id) {
+    constructor(id, neighbours = []) {
         this.id = id;
+        this.neighbours = neighbours;
+    }
+}
+
+class Graph {
+    constructor(nodes) {
+        this.Nodes = nodes;
     }
 }
 
@@ -63,32 +70,60 @@ function ternarytree(n, top) {
     return rootnode;
 }
 
-function createGraph(n) {
-    let graph = [n];
+function createGraph(nodes, maxDegree) {
+    let graph = new Array(nodes);
 
-    for (let i = 0; i < n; i++) {
-        graph[i] = new Array(n+1).fill(0);
-        graph[i][0] = 1;
-        
-        const numNeighbours = Math.floor(Math.random() * (n + 1));
+    for (let i = 0; i < nodes; i++) {
+        const selfId = i + 1;
 
-        for (let j = 0; j < numNeighbours; j++) {
-            const neighbour = getRandomIntInclusive(1, n);
-            graph[i][neighbour] = 1;
-
-            if(graph[neighbour -1] === undefined){
-              graph[neighbour -1] = new Array(n+1);
-            }
-            graph[neighbour - 1][i] = 1;
+        if (graph[i] === undefined) {
+          graph[i] = new GraphNode(selfId, new Array(0));
         }
         
+        const numNeighbours = getRandomIntInclusive(0, Math.min(maxDegree, nodes - 1));
+
+        //console.log(selfId, "Neighbours Needed", numNeighbours);
+        let j = 0;
+
+        while (j < numNeighbours) {
+            let neighbour = selfId;
+            let tries = 0;
+
+            while (neighbour === selfId || graph[i].neighbours.includes(neighbour) === true) {
+                if (tries < 20) {
+                    neighbour = getRandomIntInclusive(1, nodes);
+                } else {
+                    break;
+                }
+                tries++;
+            }
+
+            if (neighbour !== selfId) {
+                //console.log("FOUND Neighbour after: ", tries, "tries");
+                graph[i].neighbours[j] = neighbour;
+
+                if (graph[neighbour - 1] === undefined) {
+                    //console.log("undefined neighbour");
+                    graph[neighbour - 1] = new GraphNode(neighbour, new Array(0));
+                }
+                if (graph[neighbour - 1].neighbours.includes(selfId) === false) {
+                    //console.log(selfId, neighbour, "len:", graph[neighbour - 1].neighbours.length);
+                    graph[neighbour - 1].neighbours[graph[neighbour - 1].neighbours.length] =
+                        selfId;
+                    //console.log(neighbour, "Reverse link:", graph[neighbour - 1].neighbours);
+                }
+                j++;
+            }
+        }
+
+        graph[i].neighbours.sort((a, b) => a - b);
     }
 
     return graph;
 }
 
 function getRandomIntInclusive(min, max) {
-  min = Math.ceil(min);
-  max = Math.floor(max);
-  return Math.floor(Math.random() * (max - min + 1) + min); //The maximum is inclusive and the minimum is inclusive
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1) + min); //The maximum is inclusive and the minimum is inclusive
 }
