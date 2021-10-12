@@ -45,8 +45,8 @@ function getBarChart(n, useColors = false) {
   const barchart = new Array(n);
 
   for (let bar = 0; bar < n; bar++) {
-    let min = 100;
-    let max = 10000;
+    let min = 10000;
+    let max = 1000000;
     let value = parseInt(Math.random() * (max - min) + min);
     let colIndex = parseInt(bar % colours.length);
     let colour = "orangered";

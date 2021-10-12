@@ -70,11 +70,14 @@ function draw(bars = 0, useColors = false, showBarValues = false, xAxisText = ""
 
             //Y axis caption
             ctx.save();
-            // ctx.translate(x, y);
             ctx.rotate((3 * Math.PI) / 2);
+            drawValue(
+                ctx,
+                -((yTop + baseY) / 2) - ctx.measureText(yAxisText).width / 2,
+                25,
+                yAxisText
+            );
 
-            drawValue(ctx, -((yTop + baseY)/2) - ctx.measureText(yAxisText).width/2, 25, yAxisText);
-           
             ctx.restore();
 
             let barwidth = 50;

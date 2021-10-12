@@ -8,7 +8,7 @@ function createMenu() {
     let index = document.createElement("li");
     index.innerHTML = "<a href='index.html'>Radial</a>";
     let spoke = document.createElement("li");
-    spoke.innerHTML = "<a href='spoke.html'>Spoke</a>";
+    spoke.innerHTML = "<a href='graphs.html'>Graphs</a>";
     let tree = document.createElement("li");
     tree.innerHTML = "<a href='tree.html'>Trees</a>";
     let pie = document.createElement("li");

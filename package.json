@@ -1,0 +1,18 @@
+{
+    "engines": {
+        "vscode": "^1.22.0"
+    },
+    "engineStrict": true,
+    "eslintConfig": {
+        "ecmaFeatures": {
+            "arrowFunctions": true,
+            "classes": true,
+            "impliedStrict": true,
+            "defaultParams": true
+        }
+    },
+    "prettier": {
+        "printWidth": 100,
+        "tabWidth": 4
+    }
+}
