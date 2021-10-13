@@ -71,15 +71,16 @@ function ternarytree(n, top) {
 }
 
 function createGraph(nodes, maxDegree) {
-    let graph = new Array(nodes);
+    let graph = []; //new Array(nodes);
 
     for (let i = 0; i < nodes; i++) {
         const selfId = i + 1;
-
+        //console.log("G[i]:",i,graph[i]);
         if (graph[i] === undefined) {
-          graph[i] = new GraphNode(selfId, new Array(0));
+            graph[i] = new GraphNode(selfId, []);
+            //console.log("G[i] after:",i, graph[i]);
         }
-        
+
         const numNeighbours = getRandomIntInclusive(0, Math.min(maxDegree, nodes - 1));
 
         //console.log(selfId, "Neighbours Needed", numNeighbours);
@@ -100,11 +101,13 @@ function createGraph(nodes, maxDegree) {
 
             if (neighbour !== selfId) {
                 //console.log("FOUND Neighbour after: ", tries, "tries");
-                graph[i].neighbours[j] = neighbour;
+                if (graph[i].neighbours.includes(neighbour) === false) {
+                    graph[i].neighbours[j] = neighbour;
+                }
 
                 if (graph[neighbour - 1] === undefined) {
                     //console.log("undefined neighbour");
-                    graph[neighbour - 1] = new GraphNode(neighbour, new Array(0));
+                    graph[neighbour - 1] = new GraphNode(neighbour, []);
                 }
                 if (graph[neighbour - 1].neighbours.includes(selfId) === false) {
                     //console.log(selfId, neighbour, "len:", graph[neighbour - 1].neighbours.length);
