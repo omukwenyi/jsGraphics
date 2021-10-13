@@ -71,55 +71,43 @@ function ternarytree(n, top) {
 }
 
 function createGraph(nodes, maxDegree) {
-    let graph = []; //new Array(nodes);
+    //Create the adjacency matrix
+    let adjMAtrix = new Array(nodes).fill(0);
+
+    for (let i = 0; i < nodes; i++) {
+        adjMAtrix[i] = new Array(nodes).fill(0);
+
+        for (let j = 0; j < nodes; j++) {
+            if (i === j) {
+                adjMAtrix[i][j] = 0;
+            } else {
+                let conValue = getRandomIntInclusive(0, 1);
+                adjMAtrix[i][j] = conValue;
+                if (adjMAtrix[j][i] == undefined) {
+                    adjMAtrix[j] = new Array(nodes).fill(0);
+                }
+                adjMAtrix[j][i] = conValue;
+            }
+        }
+    }
+
+    console.log(adjMAtrix);
+
+    let graph = [];
 
     for (let i = 0; i < nodes; i++) {
         const selfId = i + 1;
-        //console.log("G[i]:",i,graph[i]);
+
         if (graph[i] === undefined) {
             graph[i] = new GraphNode(selfId, []);
-            //console.log("G[i] after:",i, graph[i]);
         }
 
-        const numNeighbours = getRandomIntInclusive(0, Math.min(maxDegree, nodes - 1));
-
-        //console.log(selfId, "Neighbours Needed", numNeighbours);
-        let j = 0;
-
-        while (j < numNeighbours) {
-            let neighbour = selfId;
-            let tries = 0;
-
-            while (neighbour === selfId || graph[i].neighbours.includes(neighbour) === true) {
-                if (tries < 20) {
-                    neighbour = getRandomIntInclusive(1, nodes);
-                } else {
-                    break;
-                }
-                tries++;
-            }
-
-            if (neighbour !== selfId) {
-                //console.log("FOUND Neighbour after: ", tries, "tries");
-                if (graph[i].neighbours.includes(neighbour) === false) {
-                    graph[i].neighbours[j] = neighbour;
-                }
-
-                if (graph[neighbour - 1] === undefined) {
-                    //console.log("undefined neighbour");
-                    graph[neighbour - 1] = new GraphNode(neighbour, []);
-                }
-                if (graph[neighbour - 1].neighbours.includes(selfId) === false) {
-                    //console.log(selfId, neighbour, "len:", graph[neighbour - 1].neighbours.length);
-                    graph[neighbour - 1].neighbours[graph[neighbour - 1].neighbours.length] =
-                        selfId;
-                    //console.log(neighbour, "Reverse link:", graph[neighbour - 1].neighbours);
-                }
-                j++;
+        for (let j = 0; j < nodes; j++) {
+            if (adjMAtrix[i][j] == 1) {
+                graph[i].neighbours.push(j + 1);
             }
         }
-
-        graph[i].neighbours.sort((a, b) => a - b);
+        //graph[i].neighbours.sort((a, b) => a - b);
     }
 
     return graph;

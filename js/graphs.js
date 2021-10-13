@@ -22,12 +22,13 @@ function draw(nodes) {
 
         if (nodes > 0) {
             const graph = createGraph(parseInt(nodes), 3);
+            console.log(graph);
 
             //sort graph by degree centrality
             graph.sort((a, b) => a.neighbours.length - b.neighbours.length).reverse();
-            console.log(graph);
-            let coods = [];
 
+            let coods = [];
+            //console.log(graph);
             for (let i = 0; i < graph.length; i++) {
                 const node = graph[i];
                 drawGraphNode(ctx, graph, node, cw, ch, coods);
@@ -43,12 +44,12 @@ function drawGraphNode(ctx, graph, node, cw, ch, coods, px = null, py = null) {
     if (px === null && py === null) {
         nx = cw / 2;
         ny = ch / 2;
-      
-        let foundxy = coods.find(xy => xy !== undefined && xy[0]===nx && xy[1]===ny);
 
-        console.log(node.id, "Found:", foundxy);
-        
-        if (foundxy !==undefined) {
+        let foundxy = coods.find((xy) => xy !== undefined && xy[0] === nx && xy[1] === ny);
+
+        //console.log(node.id, "Found:", foundxy);
+
+        if (foundxy !== undefined) {
             nx = nx - 100;
             ny = ny - 100;
             //console.log(node.id, "Coods:", coods, "Adjusted:", [nx,ny]);
@@ -61,22 +62,17 @@ function drawGraphNode(ctx, graph, node, cw, ch, coods, px = null, py = null) {
         }
         return;
     }
-
-    if (px !== null && py !== null) {
-        drawLine(ctx, [px, py], [nx, ny], "red", 1);
-    }
-
-    drawCircle(ctx, nx, ny, 20, "black");
+   
+    drawCircle(ctx, nx, ny, 20, "black", node.neighbours.length + 1);
     drawValue(ctx, nx - 4, ny, node.id + "-" + node.neighbours.length);
 
     coods[node.id] = [nx, ny];
 
     let index = 0;
     for (const childId of node.neighbours) {
-        let child = graph.find((g) => g.id == childId);       
+        let child = graph.find((g) => g.id == childId);
         drawGraphNode(ctx, graph, child, cw, ch, coods, nx, ny);
     }
-    
 }
 
 function drawValue(ctx, x, y, value) {
@@ -100,10 +96,10 @@ function drawLine(ctx, begin, end, stroke = "black", width = 1) {
     ctx.stroke();
 }
 
-function drawCircle(ctx, x, y, radius = 10, stroke = "black") {
+function drawCircle(ctx, x, y, radius = 10, stroke = "black", lineWidth = 1) {
     ctx.strokeStyle = stroke;
     ctx.fillStyle = "rgba(0,0,0,1)";
-    ctx.lineWidth = 1;
+    ctx.lineWidth = lineWidth;
     ctx.beginPath();
     ctx.arc(x, y, radius, 0, 2 * Math.PI, true);
     ctx.stroke();
