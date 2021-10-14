@@ -77,22 +77,22 @@ function drawRect(ctx, x, y, width, height, type, label, cx) {
   let src = "";
   switch (type) {
     case "S":
-      src = "file://D:/Projects/graphing/images/switch.svg";
+      src = "./images/switch.svg";
       break;
     case "R":
-      src = "file://D:/Projects/graphing/images/router.svg";
+      src = "./images/router.svg";
       break;
     case "F":
-      src = "file://D:/Projects/graphing/images/firewall.svg";
+      src = "./images/firewall.svg";
       break;
     case "V":
-      src = "file://D:/Projects/graphing/images/server.svg";
+      src = "./images/server.svg";
       break;
     case "D":
-      src = "file://D:/Projects/graphing/images/database.svg";
+      src = "./images/database.svg";
       break;
       case "U":
-      src = "file://D:/Projects/graphing/images/workstation.svg";
+      src = "./images/workstation.svg";
       break;
   }
 

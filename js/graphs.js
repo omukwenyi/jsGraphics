@@ -50,15 +50,16 @@ function drawGraphNode(ctx, graph, node, cw, ch, coods, px = null, py = null) {
         //console.log(node.id, "Found:", foundxy);
 
         if (foundxy !== undefined) {
-            nx = nx - 100;
-            ny = ny - 100;
+            let direction = getRandomIntInclusive(0,1);
+            nx = (direction === 0) ? nx -  100 : nx +  100;
+            ny = (direction === 0) ? ny -  100 : ny +  100;
             //console.log(node.id, "Coods:", coods, "Adjusted:", [nx,ny]);
         }
     }
 
     if (coods[node.id] !== undefined) {
         if (px !== null && py !== null) {
-            drawLine(ctx, [px, py], coods[node.id], "blue", 1);
+            drawLine(ctx, [px, py], coods[node.id], "darkblue", 1);
         }
         return;
     }
