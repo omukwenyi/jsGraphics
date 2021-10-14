@@ -21,6 +21,8 @@ class GraphNode {
     constructor(id, neighbours = []) {
         this.id = id;
         this.neighbours = neighbours;
+        this.degreeCentrality = 0.0;
+        this.closenessCentrality = 0.0;
     }
 }
 
@@ -72,26 +74,26 @@ function ternarytree(n, top) {
 
 function createGraph(nodes, maxDegree) {
     //Create the adjacency matrix
-    let adjMAtrix = new Array(nodes).fill(0);
+    let adjMatrix = new Array(nodes).fill(0);
 
     for (let i = 0; i < nodes; i++) {
-        adjMAtrix[i] = new Array(nodes).fill(0);
+        adjMatrix[i] = new Array(nodes).fill(0);
 
         for (let j = 0; j < nodes; j++) {
             if (i === j) {
-                adjMAtrix[i][j] = 0;
+                adjMatrix[i][j] = 0;
             } else {
                 let conValue = getRandomIntInclusive(0, 1);
-                adjMAtrix[i][j] = conValue;
-                if (adjMAtrix[j][i] == undefined) {
-                    adjMAtrix[j] = new Array(nodes).fill(0);
+                adjMatrix[i][j] = conValue;
+                if (adjMatrix[j][i] == undefined) {
+                    adjMatrix[j] = new Array(nodes).fill(0);
                 }
-                adjMAtrix[j][i] = conValue;
+                adjMatrix[j][i] = conValue;
             }
         }
     }
 
-    console.log(adjMAtrix);
+    //console.log(adjMAtrix);
 
     let graph = [];
 
@@ -103,14 +105,61 @@ function createGraph(nodes, maxDegree) {
         }
 
         for (let j = 0; j < nodes; j++) {
-            if (adjMAtrix[i][j] == 1) {
+            if (adjMatrix[i][j] == 1) {
                 graph[i].neighbours.push(j + 1);
             }
         }
-        //graph[i].neighbours.sort((a, b) => a - b);
     }
 
+    //Calculate degree centrality
+    for (const node of graph) {
+        node.degreeCentrality = node.neighbours.length / nodes;
+    }
+
+    //calculate closeness centrality
+    let distMatrix = new Array(nodes).fill(0);
+
+    for (let i = 0; i < nodes; i++) {
+        distMatrix[i] = new Array(nodes).fill(0);
+        const node = graph[i];
+
+        for (let j = 0; j < nodes; j++) {
+            let visited = [];
+            if (i === j) {
+                distMatrix[i][j] = 0;
+            } else if (node.neighbours.includes(j + 1)) {
+                distMatrix[i][j] = 1;
+            } else {
+                distMatrix[i][j] = distanceToNode(graph, node, j + 1, visited);
+            }
+        }
+
+        const sum = distMatrix[i].reduce((pv,cv)=>pv + cv);
+        const score = (sum == 0) ? 0 : (nodes-1)/sum;
+        graph[i].closenessCentrality = score;
+    }
+    
+    //console.log(distMatrix);
+    //console.log(scores);
     return graph;
+}
+
+function distanceToNode(graph, node, destId, visited) {
+    let distance = 0;
+
+    if (visited.length > 0 && visited.includes(node.id)) return distance;
+    visited.push(node.id);
+
+    for (const child of node.neighbours) {
+        if (visited.includes(child) === false) {
+            if (graph[child - 1].neighbours.includes(destId)) {
+                return visited.length + 1;                
+            } else {
+                return distanceToNode(graph, graph[child - 1], destId, visited);
+            }
+        }
+    }
+    return distance;
 }
 
 function getRandomIntInclusive(min, max) {

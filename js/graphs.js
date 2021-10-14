@@ -22,37 +22,40 @@ function draw(nodes) {
 
         if (nodes > 0) {
             const graph = createGraph(parseInt(nodes), 3);
-            console.log(graph);
+            //console.log(graph);
 
-            //sort graph by degree centrality
-            graph.sort((a, b) => a.neighbours.length - b.neighbours.length).reverse();
+            //sort graph by  centrality
+
+            graph.sort((a, b) => a.closenessCentrality - b.closenessCentrality).reverse();
 
             let coods = [];
-            //console.log(graph);
+            console.log(graph);
+
             for (let i = 0; i < graph.length; i++) {
                 const node = graph[i];
-                drawGraphNode(ctx, graph, node, cw, ch, coods);
+                const box = [cx - 100*(i+1), cy - 100*(i+1), cx + 100*(i+1), cy + 100*(i+1)];
+                drawGraphNode(ctx, graph, node, box, coods);
             }
         }
     }
 }
 
-function drawGraphNode(ctx, graph, node, cw, ch, coods, px = null, py = null) {
-    let nx = getRandomIntInclusive(20, cw - 20);
-    let ny = getRandomIntInclusive(20, ch - 20);
+function drawGraphNode(ctx, graph, node, box, coods, px = null, py = null) {
+    let nx = getRandomIntInclusive(20, (box[0] + box[2]) / 2 - 20);
+    let ny = getRandomIntInclusive(20, (box[1] + box[3]) / 2 - 20);
 
     if (px === null && py === null) {
-        nx = cw / 2;
-        ny = ch / 2;
+        nx = (box[0] + box[2]) / 2;
+        ny = (box[1] + box[3]) / 2;
 
         let foundxy = coods.find((xy) => xy !== undefined && xy[0] === nx && xy[1] === ny);
 
         //console.log(node.id, "Found:", foundxy);
 
         if (foundxy !== undefined) {
-            let direction = getRandomIntInclusive(0,1);
-            nx = (direction === 0) ? nx -  100 : nx +  100;
-            ny = (direction === 0) ? ny -  100 : ny +  100;
+            let direction = getRandomIntInclusive(0, 1);
+            nx = direction === 0 ? nx - 100 : nx + 100;
+            ny = direction === 0 ? ny - 100 : ny + 100;
             //console.log(node.id, "Coods:", coods, "Adjusted:", [nx,ny]);
         }
     }
@@ -63,8 +66,15 @@ function drawGraphNode(ctx, graph, node, cw, ch, coods, px = null, py = null) {
         }
         return;
     }
-   
-    drawCircle(ctx, nx, ny, 20, "black", node.neighbours.length + 1);
+
+    drawCircle(
+        ctx,
+        nx,
+        ny,
+        20,
+        "black",
+        node.closenessCentrality * node.degreeCentrality * 5 + 0.5
+    );
     drawValue(ctx, nx - 4, ny, node.id + "-" + node.neighbours.length);
 
     coods[node.id] = [nx, ny];
@@ -72,7 +82,8 @@ function drawGraphNode(ctx, graph, node, cw, ch, coods, px = null, py = null) {
     let index = 0;
     for (const childId of node.neighbours) {
         let child = graph.find((g) => g.id == childId);
-        drawGraphNode(ctx, graph, child, cw, ch, coods, nx, ny);
+        let childBox = [box[0] - 100, box[1] - 100, box[2] + 100, box[3] + 100];
+        drawGraphNode(ctx, graph, child, childBox, coods, nx, ny);
     }
 }
 
