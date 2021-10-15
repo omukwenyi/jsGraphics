@@ -1,5 +1,7 @@
 "use strict";
 
+import { drawRectClear, drawValue, drawGrid, drawLine, drawCircleClear } from "./common.js";
+
 function draw(nodes) {
     console.clear();
 
@@ -33,7 +35,12 @@ function draw(nodes) {
 
             for (let i = 0; i < graph.length; i++) {
                 const node = graph[i];
-                const box = [cx - 100*(i+1), cy - 100*(i+1), cx + 100*(i+1), cy + 100*(i+1)];
+                const box = [
+                    cx - 50 * (i + 1),
+                    cy - 50 * (i + 1),
+                    cx + 50 * (i + 1),
+                    cy + 50 * (i + 1),
+                ];
                 drawGraphNode(ctx, graph, node, box, coods);
             }
         }
@@ -41,8 +48,8 @@ function draw(nodes) {
 }
 
 function drawGraphNode(ctx, graph, node, box, coods, px = null, py = null) {
-    let nx = getRandomIntInclusive(20, (box[0] + box[2]) / 2 - 20);
-    let ny = getRandomIntInclusive(20, (box[1] + box[3]) / 2 - 20);
+    let nx = getRandomIntInclusive(box[0],  box[2]);
+    let ny = getRandomIntInclusive(box[1], box[3]);
 
     if (px === null && py === null) {
         nx = (box[0] + box[2]) / 2;
@@ -56,7 +63,7 @@ function drawGraphNode(ctx, graph, node, box, coods, px = null, py = null) {
             let direction = getRandomIntInclusive(0, 1);
             nx = direction === 0 ? nx - 100 : nx + 100;
             ny = direction === 0 ? ny - 100 : ny + 100;
-            //console.log(node.id, "Coods:", coods, "Adjusted:", [nx,ny]);
+            console.log(node.id, "Coods:", coods, "Adjusted:", [nx,ny]);
         }
     }
 
@@ -67,63 +74,18 @@ function drawGraphNode(ctx, graph, node, box, coods, px = null, py = null) {
         return;
     }
 
-    drawCircle(
-        ctx,
-        nx,
-        ny,
-        25,
-        "black",
-        node.closenessCentrality * node.degreeCentrality * 5 + 0.5
-    );
-    drawValue(ctx, nx - 4, ny, node.id + "-" + node.closenessCentrality);
+    drawRectClear(ctx, box[0], box[1], box[2] - box[0], box[3] - box[1], "red");
+
+    drawCircleClear(ctx, nx, ny, 25, "black", node.closenessCentrality * 3 + 0.5);
+    drawValue(ctx, nx - 8, ny, node.id + "-" + node.closenessCentrality.toFixed(1));
 
     coods[node.id] = [nx, ny];
 
     let index = 0;
     for (const childId of node.neighbours) {
         let child = graph.find((g) => g.id == childId);
-        let childBox = [box[0] - 100, box[1] - 100, box[2] + 100, box[3] + 100];
+        let childBox = [box[0] - 50, box[1] - 50, box[2] + 50, box[3] + 50];
         drawGraphNode(ctx, graph, child, childBox, coods, nx, ny);
-    }
-}
-
-function drawValue(ctx, x, y, value) {
-    ctx.font = "bold 12px serif";
-    ctx.fillStyle = "black";
-    ctx.fillText(value, x, y);
-}
-
-function drawLine(ctx, begin, end, stroke = "black", width = 1) {
-    if (stroke) {
-        ctx.strokeStyle = stroke;
-    }
-
-    if (width) {
-        ctx.lineWidth = width;
-    }
-
-    ctx.beginPath();
-    ctx.moveTo(...begin);
-    ctx.lineTo(...end);
-    ctx.stroke();
-}
-
-function drawCircle(ctx, x, y, radius = 10, stroke = "black", lineWidth = 1) {
-    ctx.strokeStyle = stroke;
-    ctx.fillStyle = "rgba(0,0,0,1)";
-    ctx.lineWidth = lineWidth;
-    ctx.beginPath();
-    ctx.arc(x, y, radius, 0, 2 * Math.PI, true);
-    ctx.stroke();
-    //ctx.fill();
-}
-
-function drawGrid(ctx, width, height, gap, lineWidth) {
-    for (let i = 0; i < width; i += gap) {
-        drawLine(ctx, [i, 0], [i, height], "gray", lineWidth);
-    }
-    for (let i = 0; i < height; i += gap) {
-        drawLine(ctx, [0, i], [width, i], "gray", lineWidth);
     }
 }
 
