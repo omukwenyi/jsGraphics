@@ -71,11 +71,11 @@ function drawGraphNode(ctx, graph, node, box, coods, px = null, py = null) {
         ctx,
         nx,
         ny,
-        20,
+        25,
         "black",
         node.closenessCentrality * node.degreeCentrality * 5 + 0.5
     );
-    drawValue(ctx, nx - 4, ny, node.id + "-" + node.neighbours.length);
+    drawValue(ctx, nx - 4, ny, node.id + "-" + node.closenessCentrality);
 
     coods[node.id] = [nx, ny];
 
