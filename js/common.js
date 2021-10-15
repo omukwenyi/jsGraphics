@@ -16,6 +16,12 @@ function drawValue(ctx, x, y, value) {
     ctx.fillText(value, x, y);
 }
 
+function drawValueActive(ctx, x, y, value, fill="black") {
+    ctx.font = "bold 12px serif";
+    ctx.fillStyle = fill;
+    ctx.fillText(value, x, y);
+}
+
 function drawGrid(ctx, width, height, gap, lineWidth) {
     for (let i = 0; i < width; i += gap) {
         drawLine(ctx, [i, 0], [i, height], "gray", lineWidth);
@@ -50,9 +56,9 @@ function drawCircleClear(ctx, x, y, radius = 10, stroke = "black", lineWidth = 1
     //ctx.fill();
 }
 
-function drawCircle(ctx, x, y, radius = 10, stroke = "black", lineWidth = 1) {
+function drawCircle(ctx, x, y, radius = 10, stroke = "black", fill = "black", lineWidth = 1) {
     ctx.strokeStyle = stroke;
-    ctx.fillStyle = "rgba(0,0,0,1)";
+    ctx.fillStyle = fill;
     ctx.lineWidth = lineWidth;
     ctx.beginPath();
     ctx.arc(x, y, radius, 0, 2 * Math.PI, true);
@@ -66,4 +72,13 @@ function getRandomIntInclusive(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min); //The maximum is inclusive and the minimum is inclusive
 }
 
-export {drawRect, drawRectClear, drawValue, drawGrid, drawLine, drawCircle, drawCircleClear, getRandomIntInclusive};
+export {
+    drawRect,
+    drawRectClear,
+    drawValue,
+    drawGrid,
+    drawLine,
+    drawCircle,
+    drawCircleClear,
+    getRandomIntInclusive, drawValueActive
+};
