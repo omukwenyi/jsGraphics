@@ -60,4 +60,10 @@ function drawCircle(ctx, x, y, radius = 10, stroke = "black", lineWidth = 1) {
     ctx.fill();
 }
 
-export {drawRect, drawRectClear, drawValue, drawGrid, drawLine, drawCircle, drawCircleClear};
+function getRandomIntInclusive(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1) + min); //The maximum is inclusive and the minimum is inclusive
+}
+
+export {drawRect, drawRectClear, drawValue, drawGrid, drawLine, drawCircle, drawCircleClear, getRandomIntInclusive};

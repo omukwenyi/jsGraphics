@@ -1,5 +1,7 @@
 "use strict";
 
+import {ternarytree} from "./nodedata.js";
+
 function init(nodes) {
   console.clear();
   resize();

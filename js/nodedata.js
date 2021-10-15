@@ -1,5 +1,6 @@
 "use strict";
 
+import {getRandomIntInclusive} from './common.js';
 class BMember {
     constructor(id, left, right) {
         this.id = id;
@@ -162,8 +163,4 @@ function distanceToNode(graph, node, destId, visited) {
     return distance;
 }
 
-function getRandomIntInclusive(min, max) {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1) + min); //The maximum is inclusive and the minimum is inclusive
-}
+export {createGraph, binarytree, ternarytree};
