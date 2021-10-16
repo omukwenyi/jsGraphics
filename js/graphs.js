@@ -59,7 +59,7 @@ function draw(nodes) {
 
             for (let i = 0; i < edgePositions.length; i++) {
                 const pos = edgePositions[i];
-                      drawLine(ctx, pos[2], pos[3], "black", 1 );          
+                      drawLine(ctx, pos[2], pos[3], "black", 0.75 );          
             }
         }
     }
@@ -413,7 +413,7 @@ function spring(ctx, graph, cw, ch, radius) {
 
 function drawGraphNode(ctx, node, x, y) {
     // let px =
-    drawCircle(ctx, x, y, 10, "blue", "blue", 1);
+    drawCircle(ctx, x, y, 12, "blue", "blue", 1);
     drawValueActive(ctx, x - 4, y + 4, node.id, "white");
 }
 
