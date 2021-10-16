@@ -413,7 +413,6 @@ function spring(ctx, graph, cw, ch, radius) {
 
 function drawGraphNode(ctx, node, x, y) {
     // let px =
-    // drawLine(ctx, [px, py], coods[node.id], "black", 1);
     drawCircle(ctx, x, y, 10, "blue", "blue", 1);
     drawValueActive(ctx, x - 4, y + 4, node.id, "white");
 }
