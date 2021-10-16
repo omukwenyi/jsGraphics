@@ -16,8 +16,8 @@ function drawValue(ctx, x, y, value) {
     ctx.fillText(value, x, y);
 }
 
-function drawValueActive(ctx, x, y, value, fill="black") {
-    ctx.font = "bold 12px serif";
+function drawValueActive(ctx, x, y, value, fill = "black") {
+    ctx.font = "bold 14px serif";
     ctx.fillStyle = fill;
     ctx.fillText(value, x, y);
 }
@@ -72,6 +72,14 @@ function getRandomIntInclusive(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min); //The maximum is inclusive and the minimum is inclusive
 }
 
+function create2DArray(i, j) {
+    let array = new Array(i);
+    for (let k = 0; k < i; k++) {
+        array[k] = new Array(j);
+    }
+    return array;
+}
+
 export {
     drawRect,
     drawRectClear,
@@ -80,5 +88,6 @@ export {
     drawLine,
     drawCircle,
     drawCircleClear,
-    getRandomIntInclusive, drawValueActive
+    getRandomIntInclusive,
+    drawValueActive, create2DArray
 };

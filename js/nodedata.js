@@ -1,6 +1,6 @@
 "use strict";
 
-import {getRandomIntInclusive} from './common.js';
+import { getRandomIntInclusive } from "./common.js";
 class BMember {
     constructor(id, left, right) {
         this.id = id;
@@ -28,8 +28,9 @@ class GraphNode {
 }
 
 class Graph {
-    constructor(nodes) {
+    constructor(nodes, edges) {
         this.Nodes = nodes;
+        this.edges = edges;
     }
 }
 
@@ -84,12 +85,23 @@ function createGraph(nodes, maxDegree) {
             if (i === j) {
                 adjMatrix[i][j] = 0;
             } else {
-                let conValue = getRandomIntInclusive(0, 1);
-                adjMatrix[i][j] = conValue;
-                if (adjMatrix[j][i] == undefined) {
-                    adjMatrix[j] = new Array(nodes).fill(0);
+                let numConnsIn = 0;
+                for (let k = 0; k <= i; k++) {
+                    numConnsIn += adjMatrix[k][j];
                 }
-                adjMatrix[j][i] = conValue;
+
+                let numConnsOut = adjMatrix[i].reduce((pv, cv) => pv + cv);
+
+                if (numConnsOut < maxDegree && numConnsIn < maxDegree) {
+                    let conValue = getRandomIntInclusive(0, 1);
+                    adjMatrix[i][j] = conValue;
+                    if (adjMatrix[j][i] == undefined) {
+                        adjMatrix[j] = new Array(nodes).fill(0);
+                    }
+                    adjMatrix[j][i] = conValue;
+                } else {
+                    break;
+                }
             }
         }
     }
@@ -135,11 +147,11 @@ function createGraph(nodes, maxDegree) {
             }
         }
 
-        const sum = distMatrix[i].reduce((pv,cv)=>pv + cv);
-        const score = (sum == 0) ? 0 : (nodes-1)/sum;
+        const sum = distMatrix[i].reduce((pv, cv) => pv + cv);
+        const score = sum == 0 ? 0 : (nodes - 1) / sum;
         graph[i].closenessCentrality = score;
     }
-    
+
     //console.log(distMatrix);
     //console.log(scores);
     return graph;
@@ -154,7 +166,7 @@ function distanceToNode(graph, node, destId, visited) {
     for (const child of node.neighbours) {
         if (visited.includes(child) === false) {
             if (graph[child - 1].neighbours.includes(destId)) {
-                return visited.length + 1;                
+                return visited.length + 1;
             } else {
                 return distanceToNode(graph, graph[child - 1], destId, visited);
             }
@@ -163,4 +175,4 @@ function distanceToNode(graph, node, destId, visited) {
     return distance;
 }
 
-export {createGraph, binarytree, ternarytree};
+export { createGraph, binarytree, ternarytree };
