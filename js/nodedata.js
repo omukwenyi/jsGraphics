@@ -24,6 +24,10 @@ class GraphNode {
         this.neighbours = neighbours;
         this.degreeCentrality = 0.0;
         this.closenessCentrality = 0.0;
+        this.dispX = 0;
+        this.dispY = 0;
+        this.posX = 0;
+        this.posY = 0;
     }
 }
 
@@ -85,28 +89,31 @@ function createGraph(nodes, maxDegree) {
             if (i === j) {
                 adjMatrix[i][j] = 0;
             } else {
+                let numConnsOut = adjMatrix[i].reduce((pv, cv) => pv + cv);
+
                 let numConnsIn = 0;
                 for (let k = 0; k <= i; k++) {
                     numConnsIn += adjMatrix[k][j];
                 }
 
-                let numConnsOut = adjMatrix[i].reduce((pv, cv) => pv + cv);
-
-                if (numConnsOut < maxDegree && numConnsIn < maxDegree) {
-                    let conValue = getRandomIntInclusive(0, 1);
-                    adjMatrix[i][j] = conValue;
-                    if (adjMatrix[j][i] == undefined) {
-                        adjMatrix[j] = new Array(nodes).fill(0);
-                    }
-                    adjMatrix[j][i] = conValue;
-                } else {
-                    break;
+                //if (numConnsOut < maxDegree && numConnsIn < maxDegree) {
+                let conValue = getRandomIntInclusive(0, 1);
+                
+                if (numConnsIn >= maxDegree || numConnsOut >= maxDegree) {
+                    conValue = 0;
+                    // console.log(i, j, numConnsIn, numConnsOut);
                 }
+
+                adjMatrix[i][j] = conValue;
+                if (adjMatrix[j][i] == undefined) {
+                    adjMatrix[j] = new Array(nodes).fill(0);
+                }
+                adjMatrix[j][i] = conValue;                
             }
         }
     }
 
-    //console.log(adjMAtrix);
+    // console.log(adjMatrix);
 
     let graph = [];
 
