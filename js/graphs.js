@@ -14,7 +14,7 @@ import {
 
 import { createGraph } from "./nodedata.js";
 
-function draw(nodes) {
+function draw(nodes, maxEdges) {
     console.clear();
 
     const canvas = document.querySelector("#canvas");
@@ -22,7 +22,7 @@ function draw(nodes) {
     const headerHeight = header.scrollHeight;
 
     canvas.width = window.innerWidth - 20;
-    canvas.height = window.innerHeight - headerHeight - 60;
+    canvas.height = window.innerHeight - headerHeight - 10;
     const cw = canvas.width;
     const ch = canvas.height;
 
@@ -35,7 +35,7 @@ function draw(nodes) {
         drawGrid(ctx, canvas.width, canvas.height, 10, 0.2);
 
         if (nodes > 0) {
-            const graph = createGraph(parseInt(nodes), 4);
+            const graph = createGraph(parseInt(nodes), parseInt(maxEdges));
 
             //sort graph by  centrality
             //graph.sort((a, b) => a.closenessCentrality - b.closenessCentrality).reverse();
@@ -200,35 +200,18 @@ function reinGold(ctx, graph, cw, ch) {
             let disp = Math.sqrt(dx * dx + dy * dy);
 
             if (disp !== 0) {
-                // # cnt += 1
+                
                 let d = Math.min(disp, t) / disp;
                 let x = positions[v.id - 1][0] + dx * d;
                 let y = positions[v.id - 1][1] + dy * d;
-
-                // x = Math.min(W, Math.max(0, x)) - W / 2;
-                // y = Math.min(L, Math.max(0, y)) - L / 2;
-
-                // let newX =
-                //     Math.min(
-                //         Math.sqrt((W * W) / 4 - y * y),
-                //         Math.max(-Math.sqrt((W * W) / 4 - y * y), x)
-                //     ) +
-                //     W / 2;
-                // let newY =
-                //     Math.min(
-                //         Math.sqrt((L * L) / 4 - x * x),
-                //         Math.max(-Math.sqrt((L * L) / 4 - x * x), y)
-                //     ) +
-                //     L / 2;
-
-                // positions[v.id - 1][0] = isNaN(newX) ? positions[v.id - 1][0] : newX;
-                // positions[v.id - 1][1] = isNaN(newY) ? positions[v.id - 1][1] : newY;
+                
 
                 positions[v.id - 1][0] = x;
                 positions[v.id - 1][1] = y;
 
-                positions[v.id - 1][0] = Math.min(W / 2, Math.max(-W / 2, positions[v.id - 1][0]));
-                positions[v.id - 1][1] = Math.min(L / 2, Math.max(-L / 2, positions[v.id - 1][1]));
+                positions[v.id - 1][0] = Math.min(W, Math.max(0, positions[v.id - 1][0]));
+                positions[v.id - 1][1] = Math.min(L , Math.max(0, positions[v.id - 1][1]));
+
             }
         }
 
@@ -441,11 +424,19 @@ function drawGraphNode_Deprecated(ctx, graph, node, positions, x, y, coods, px =
 
 const controlOut = document.getElementById("nodes-output");
 const control = document.getElementById("nodes");
-let r = parseInt(control.value); // nodes
+const maxEdges = document.getElementById("maxEdges");
 
+let r = parseInt(control.value); // nodes
+let m = parseInt(maxEdges.value);
+
+
+maxEdges.onchange = () => {
+    m = maxEdges.value;
+    draw(r,m);
+}
 control.oninput = () => {
     controlOut.textContent = r = control.value;
-    draw(r);
+    draw(r, m);
 };
 
 window.onresize = () => {
@@ -453,10 +444,10 @@ window.onresize = () => {
     const header = document.querySelector("#title");
     const headerHeight = header.scrollHeight;
 
-    canvas.width = window.innerWidth - 50;
-    canvas.height = window.innerHeight - headerHeight - 80;
+    canvas.width = window.innerWidth - 60;
+    canvas.height = window.innerHeight - headerHeight;
 
-    draw(r);
+    draw(r, m);
 };
 
-draw(r);
+draw(r,m);
