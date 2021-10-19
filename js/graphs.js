@@ -21,8 +21,8 @@ function draw(nodes, maxEdges) {
     const header = document.querySelector("#title");
     const headerHeight = header.scrollHeight;
 
-    canvas.width = window.innerWidth - 20;
-    canvas.height = window.innerHeight - headerHeight - 10;
+    canvas.width = window.innerWidth - 40;
+    canvas.height = window.innerHeight - headerHeight - 40;
     const cw = canvas.width;
     const ch = canvas.height;
 
@@ -35,25 +35,27 @@ function draw(nodes, maxEdges) {
         drawGrid(ctx, canvas.width, canvas.height, 10, 0.2);
 
         if (nodes > 0) {
-            const full_graph = createGraph(parseInt(nodes), parseInt(maxEdges));
+            const full_graph = createGraph(
+                parseInt(nodes),
+                Math.min(parseInt(nodes), parseInt(maxEdges))
+            );
 
-            console.log(full_graph);
+            // console.log(full_graph);
 
-            const graph = full_graph.filter(e=>e.neighbours.length > 0);
+            const graph = full_graph.filter((e) => e.neighbours.length > 0);
 
             //sort graph by  centrality
             //graph.sort((a, b) => a.closenessCentrality - b.closenessCentrality).reverse();
 
             // let coods = [];
-            console.log(graph);
-            
+            // console.log(graph);
+
             //let positions = spring(ctx, graph, cw, ch, 25);
             // let positions = reinGold(ctx, graph, cw, ch);
             let posGraph = reinGold(ctx, graph, cw, ch);
 
             const edgePositions = getEdgePositions(posGraph);
 
-            
             // console.log(cw, ch);
             console.log(posGraph);
 
@@ -61,7 +63,7 @@ function draw(nodes, maxEdges) {
                 const node = posGraph[i];
                 // const x = positions[i][0];
                 // const y = positions[i][1];
-                const x = node.posX;                
+                const x = node.posX;
                 const y = node.posY;
 
                 drawGraphNode(ctx, node, x, y);
@@ -69,24 +71,23 @@ function draw(nodes, maxEdges) {
 
             for (let i = 0; i < edgePositions.length; i++) {
                 const pos = edgePositions[i];
-                      drawLine(ctx, pos[2], pos[3], "black", 0.75 );          
+                drawLine(ctx, pos[2], pos[3], "black", 0.75);
             }
         }
     }
 }
 
+function simulate(ctx, graph, color) {
+    for (let i = 0; i < graph.length; i++) {
+        const x = graph[i].posX;
+        const y = graph[i].posY;
 
-function simulate(ctx, positions, color) {
-    for (let i = 0; i < positions.length; i++) {
-        const x = positions[i][0];
-        const y = positions[i][1];
-
-        drawCircleClear(ctx, x, y, 5, color, 1);
+        drawCircleClear(ctx, x, y, 7, color, 1);
         drawValueActive(ctx, x - 2, y + 2, i + 1, "white");
     }
 }
 
-function getEdgePositions(graph, positions=null) {
+function getEdgePositions(graph, positions = null) {
     let edgePositions = [];
 
     for (const node of graph) {
@@ -96,7 +97,7 @@ function getEdgePositions(graph, positions=null) {
                 let foundEdge2 = edgePositions.find((e) => e[0] === neighbour && e[1] === node.id);
 
                 if (foundEdge1 === undefined && foundEdge2 === undefined) {
-                    let neighbourNode = graph.find(n=> n.id == neighbour);
+                    let neighbourNode = graph.find((n) => n.id == neighbour);
 
                     edgePositions.push([
                         node.id,
@@ -138,11 +139,12 @@ function reinGold(ctx, graph, cw, ch) {
     const L = ch;
     const area = W * L;
     const k = Math.sqrt(area / graph.length);
-    let t = W / (W * 10);
-    let iterations = 50;
+
+    // let t = W / (W * 10);
+    let t = 30 * 0.1;
+    let iterations = 75;
     let dt = t / (iterations + 1);
 
-    let positions = new Array(graph.length);
     let edges = getEdges(graph);
 
     //the vertices are assigned random initial positions
@@ -153,14 +155,51 @@ function reinGold(ctx, graph, cw, ch) {
     //     positions[i] = [nx, ny];
     // }
 
+    let positions = [];
+    const isClose = (pos, coods) => {
+        if (pos.length === 0) {
+            return false;
+        } else {
+            let foundx = positions.find(
+                (p) =>
+                    coods[0] >= p[0] - 30 &&
+                    coods[0] <= p[0] + 30 &&
+                    coods[1] >= p[1] - 30 &&
+                    coods[1] <= p[1] + 30
+            );
+            if (foundx) {
+                return true;
+            }
+        }
+
+        return false;
+    };
+
+    //get node with highest centrality and fix it in the middle
+    const hcNode = graph.reduce((a, b) => (a.closenessCentrality > b.closenessCentrality ? a : b));
+
     for (let i = 0; i < graph.length; i++) {
         let node = graph[i];
-        let nx = getRandomIntInclusive(100, W - 100);
-        let ny = getRandomIntInclusive(100, L - 100);
-        node.posX = nx;
-        node.posY = ny;
+
+        if (hcNode !== undefined && node.id !== hcNode.id) {
+            let nx = getRandomIntInclusive(100, W - 100);
+            let ny = getRandomIntInclusive(100, L - 100);
+
+            while (isClose(positions, [nx, ny])) {
+                nx = getRandomIntInclusive(100, W - 100);
+                ny = getRandomIntInclusive(100, L - 100);
+            }
+
+            node.posX = nx;
+            node.posY = ny;
+        } else {
+            node.posX = W / 2;
+            node.posY = L / 2;
+        }
+
+        positions.push([node.posX, node.posY]);
     }
-    // simulate(ctx, positions, "red");
+    // simulate(ctx, graph, "red");
 
     const fa = (D, kk) => {
         return (D * D) / kk;
@@ -173,8 +212,7 @@ function reinGold(ctx, graph, cw, ch) {
     let displacement = create2DArray(graph.length, 2);
 
     for (let i = 0; i < iterations; i++) {
-        
-        // simulate(ctx, positions, "red");
+        // simulate(ctx, graph, "red");
         //calculate repulsive forces
         for (const v of graph) {
             //each vertex has two vectors: .pos and .disp
@@ -187,7 +225,7 @@ function reinGold(ctx, graph, cw, ch) {
                 if (v.id !== u.id) {
                     // let dx = positions[v.id - 1][0] - positions[u.id - 1][0];
                     // let dy = positions[v.id - 1][1] - positions[u.id - 1][1];
-                    
+
                     let dx = v.posX - u.posX;
                     let dy = v.posY - u.posY;
 
@@ -206,8 +244,8 @@ function reinGold(ctx, graph, cw, ch) {
 
         //calculate attractive forces
         for (const edge of edges) {
-            let sn = graph.find(n=>n.id === edge[0]);
-            let en = graph.find(n=>n.id === edge[1]);
+            let sn = graph.find((n) => n.id === edge[0]);
+            let en = graph.find((n) => n.id === edge[1]);
 
             // let dx = positions[edge[0] - 1][0] - positions[edge[1] - 1][0];
             // let dy = positions[edge[0] - 1][1] - positions[edge[1] - 1][1];
@@ -231,7 +269,7 @@ function reinGold(ctx, graph, cw, ch) {
         }
 
         // limit the maximum displacement to the temperature t
-        // and then prevent from being displace outside frame
+        // and then prevent from being displaced outside frame
 
         for (const v of graph) {
             let dx = v.dispX;
@@ -239,18 +277,15 @@ function reinGold(ctx, graph, cw, ch) {
             let disp = Math.sqrt(dx * dx + dy * dy);
 
             if (disp !== 0) {
-                
                 let d = Math.min(disp, t) / disp;
                 let x = v.posX + dx * d;
                 let y = v.posY + dy * d;
-                
 
                 v.posX = x;
                 v.posY = y;
 
-                v.posX = Math.min(W, Math.max(0, v.posX));
-                v.posY = Math.min(L , Math.max(0, v.posY));
-
+                v.posX = Math.min(W - 20, Math.max(20, v.posX));
+                v.posY = Math.min(L - 20, Math.max(20, v.posY));
             }
         }
 
@@ -437,30 +472,8 @@ function spring(ctx, graph, cw, ch, radius) {
 
 function drawGraphNode(ctx, node, x, y) {
     // let px =
-    drawCircle(ctx, x, y, 12, "blue", "blue", 1);
+    drawCircle(ctx, x, y, 20, "blue", "blue", 1);
     drawValueActive(ctx, x - 4, y + 4, node.id, "white");
-}
-
-function drawGraphNode_Deprecated(ctx, graph, node, positions, x, y, coods, px = null, py = null) {
-    if (coods[node.id] !== undefined) {
-        if (px !== null && py !== null) {
-            drawLine(ctx, [px, py], coods[node.id], "black", 1);
-        }
-        return;
-    }
-
-    drawCircle(ctx, x, y, 16, "black", "black", 1);
-    drawValueActive(ctx, x - 4, y + 4, node.id, "white");
-
-    coods[node.id] = [x, y];
-
-    let index = 0;
-    for (const childId of node.neighbours) {
-        let child = graph.find((g) => g.id == childId);
-        let childX = positions[child.id - 1][0];
-        let childY = positions[child.id - 1][1];
-        drawGraphNode(ctx, graph, child, positions, childX, childY, coods, x, y);
-    }
 }
 
 const controlOut = document.getElementById("nodes-output");
@@ -470,11 +483,10 @@ const maxEdges = document.getElementById("maxEdges");
 let r = parseInt(control.value); // nodes
 let m = parseInt(maxEdges.value);
 
-
 maxEdges.onchange = () => {
     m = maxEdges.value;
-    draw(r,m);
-}
+    draw(r, m);
+};
 control.oninput = () => {
     controlOut.textContent = r = control.value;
     draw(r, m);
@@ -485,10 +497,10 @@ window.onresize = () => {
     const header = document.querySelector("#title");
     const headerHeight = header.scrollHeight;
 
-    canvas.width = window.innerWidth - 60;
-    canvas.height = window.innerHeight - headerHeight;
+    canvas.width = window.innerWidth - 80;
+    canvas.height = window.innerHeight - headerHeight - 40;
 
     draw(r, m);
 };
 
-draw(r,m);
+draw(r, m);
