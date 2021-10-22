@@ -14,20 +14,14 @@
         <div id="menu">
             
         </div>
+
         <div class="row">
-            <label for="nodes">Bars</label>
-            <input name="nodes" type="range" id="nodes" min=1 max=25 value=2 style="width: 93%;">
-            <label for="nodes" id="nodes-output">1</label>
+            <label for="nodes">Data Points: </label>
+            <input name="nodes" type="range" id="nodes" min=2 max=50 value=10 style="width: 80%;">
+            <label for="nodes" id="nodes-output">10</label>
         </div>
 
         <div id="chartoptions">
-            <div class="row">                
-                <input type="checkbox" id="colors">
-                <label for="colors">Different colored Bars</label>                
-                <input type="checkbox" id="showvalues">
-                <label for="showvalues">Show data values</label>
-            </div>
-
             <div class="row">
                 <label for="xlabel">X Axis label</label>
                 <input type="text" id="xlabel">
@@ -38,8 +32,7 @@
     </div>
     <canvas id="canvas" height="400" width="500"></canvas>
     <script src="js/header.js"></script>
-    <!-- <script src="js/barchartdata.js"></script> -->
-    <script type="module" src="js/barchart.js"></script>
+    <script type="module" src="js/line.js"></script>
 </body>
 
 </html>

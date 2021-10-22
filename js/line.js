@@ -89,21 +89,24 @@ function draw(points = 0, xAxisText = "", yAxisText = "") {
             let gap = (xAxisWidth - totalBarWidth) / (parseInt(points) + 1);
 
             let positions = [];
+            positions.push([baseX, baseY]);
 
             for (let i = 0; i < bchart.length; i++) {
                 const bar = bchart[i];
                 let xpos = baseX + (i + 1) * gap + i * barwidth;
                 let height = bar.value * (yAxisHeight / max);
                 let ypos = baseY - height;
-                drawRect(ctx, xpos - (barwidth/2), ypos-(barwidth/2), barwidth, barwidth, bar.fill);
+                drawRect(
+                    ctx,
+                    xpos - barwidth / 2,
+                    ypos - barwidth / 2,
+                    barwidth,
+                    barwidth,
+                    bar.fill
+                );
 
                 positions.push([xpos, ypos]);
-
-                if (i === 0) {
-                    drawLine(ctx, [baseX, baseY], [xpos, ypos], "black", 2);
-                } else {
-                    drawLine(ctx, positions[i - 1], [xpos, ypos], "black", 2);
-                }
+                
                 // if (1===1) {
                 //     drawValue(ctx, xpos-15, ypos - 10, bar.value.toLocaleString());
                 // }
@@ -111,8 +114,24 @@ function draw(points = 0, xAxisText = "", yAxisText = "") {
                 //X axis bar label
                 drawValue(ctx, xpos + 10, baseY + 15, bar.id);
             }
+
+            drawLines(ctx, positions, "black", "round", 1);
         }
     }
+}
+
+function drawLines(ctx, positions, stroke, lineJoin="round", lineWidth=1) {
+    ctx.lineWidth = lineWidth;
+    ctx.lineJoin = lineJoin;
+    ctx.strokeStyle = stroke;
+    ctx.beginPath();
+    ctx.moveTo(...positions[0]);
+
+    for (let i = 1; i < positions.length; i++) {
+        const point = positions[i];
+        ctx.lineTo(...point);
+    }
+    ctx.stroke();
 }
 
 const control = document.getElementById("nodes");

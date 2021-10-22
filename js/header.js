@@ -5,26 +5,23 @@ function createMenu() {
     let nav = document.createElement("nav");
     let list = document.createElement("ol");
 
-    let index = document.createElement("li");
-    index.innerHTML = "<a href='index.html'>Radial</a>";
-    let spoke = document.createElement("li");
-    spoke.innerHTML = "<a href='graphs.html'>Graphs</a>";
-    let tree = document.createElement("li");
-    tree.innerHTML = "<a href='tree.html'>Trees</a>";
-    let pie = document.createElement("li");
-    pie.innerHTML = "<a href='pie.html'>Pie Chart</a>";
-    let barchart = document.createElement("li");
-    barchart.innerHTML = "<a href='barchart.html'>Bar Chart</a>";
-
-
-    list.appendChild(index);
-    list.appendChild(spoke);
-    list.appendChild(tree);
-    list.appendChild(pie);
-    list.appendChild(barchart);
+    addMenuItem(list, "index", "Radial");
+    addMenuItem(list, "graphs", "Graphs");
+    addMenuItem(list, "tree","Trees");
+    addMenuItem(list, "pie","Pie chart");    
+    addMenuItem(list, "barchart","Bar Chart");
+   
+    addMenuItem(list, "line","Line Chart");
+    addMenuItem(list, "scatter","Scatter Plot");
+    addMenuItem(list, "time","Time Series");
 
     nav.appendChild(list);
     menu.appendChild(nav);
 }
 
+function addMenuItem(list, page, pageText){
+    let item = document.createElement("li");
+    item.innerHTML = "<a href='" + page + ".html'>"+ pageText +"</a>";
+    list.appendChild(item);
+}
 createMenu();

@@ -1,5 +1,8 @@
 "use strict";
 
+import {drawGrid, drawLine, drawValue, drawRect} from "./common.js";
+import {getChartData} from "./chartdata.js";
+
 function draw(bars = 0, useColors = false, showBarValues = false, xAxisText = "", yAxisText = "") {
     console.clear();
     const canvas = document.querySelector("#canvas");
@@ -26,7 +29,7 @@ function draw(bars = 0, useColors = false, showBarValues = false, xAxisText = ""
             let baseX = 100;
             let rightEdge = cw - 50;
             let yTop = 25;
-            const bchart = getBarChart(bars, useColors);
+            const bchart = getChartData(bars, useColors);
 
             //X axis
             drawLine(ctx, [baseX, yTop], [baseX, baseY], "black", 2);
@@ -103,42 +106,8 @@ function draw(bars = 0, useColors = false, showBarValues = false, xAxisText = ""
     }
 }
 
-function drawValue(ctx, x, y, value) {
-    ctx.font = "bold 12px serif";
-    ctx.fillStyle = "black";
-    ctx.fillText(value, x, y);
-}
 
-function drawRect(ctx, x, y, width, height, fill) {
-    ctx.fillStyle = fill;
-    ctx.fillRect(x, y, width, height);
-}
-
-function drawLine(ctx, begin, end, stroke = "black", width = 1) {
-    if (stroke) {
-        ctx.strokeStyle = stroke;
-    }
-
-    if (width) {
-        ctx.lineWidth = width;
-    }
-
-    ctx.beginPath();
-    ctx.moveTo(...begin);
-    ctx.lineTo(...end);
-    ctx.stroke();
-}
-
-function drawGrid(ctx, width, height, gap, lineWidth) {
-    for (let i = 0; i < width; i += gap) {
-        drawLine(ctx, [i, 0], [i, height], "gray", lineWidth);
-    }
-    for (let i = 0; i < height; i += gap) {
-        drawLine(ctx, [0, i], [width, i], "gray", lineWidth);
-    }
-}
-
-let r = 1; // slices
+let r = 1; // bars
 
 const xAxisLabel = document.getElementById("xlabel");
 xAxisLabel.onchange = () => {

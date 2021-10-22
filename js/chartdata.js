@@ -41,7 +41,7 @@ let colours = [
   "Gray",
   "black",
 ];
-function getBarChart(n, useColors = false) {
+function getChartData(n, useColors = false) {
   const barchart = new Array(n);
 
   for (let bar = 0; bar < n; bar++) {
@@ -57,3 +57,6 @@ function getBarChart(n, useColors = false) {
   }
   return barchart;
 }
+
+
+export {getChartData};
