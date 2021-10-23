@@ -1,10 +1,12 @@
 "use strict";
 
-class BarRecord {
+class ChartRecord {
   constructor(id, value, fill) {
     this.id = id;
     this.value = value;
     this.fill = fill;
+    this.xpos = 0;
+    this.ypos = 0;
   }
 }
 
@@ -41,22 +43,29 @@ let colours = [
   "Gray",
   "black",
 ];
-function getChartData(n, useColors = false) {
+
+function getChartData(n, useColors = false, numericXAxis = false) {
   const barchart = new Array(n);
 
   for (let bar = 0; bar < n; bar++) {
-    let min = 10000;
-    let max = 1000000;
-    let value = parseInt(Math.random() * (max - min) + min);
+    let min = 0;
+    let max = 100;
+    let value = parseInt(Math.random() * (max - min) + min) + parseInt(Math.random() * (max - min) + min);
     let colIndex = parseInt(bar % colours.length);
     let colour = "orangered";
     if (useColors) {
-        colour = colours[colIndex];
+      colour = colours[colIndex];
     }
-    barchart[bar] = new BarRecord(months[bar % 12], value, colour);
+    if (numericXAxis) {
+      barchart[bar] = new ChartRecord(bar + 1, value, colour);
+    } else {
+      barchart[bar] = new ChartRecord(months[bar % 12], value, colour);
+    }
   }
   return barchart;
 }
 
 
-export {getChartData};
+export {
+  getChartData
+};

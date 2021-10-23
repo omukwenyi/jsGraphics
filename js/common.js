@@ -46,6 +46,20 @@ function drawLine(ctx, begin, end, stroke = "black", width = 1) {
     ctx.stroke();
 }
 
+function drawLines(ctx, positions, stroke, lineJoin="round", lineWidth=1) {
+    ctx.lineWidth = lineWidth;
+    ctx.lineJoin = lineJoin;
+    ctx.strokeStyle = stroke;
+    ctx.beginPath();
+    ctx.moveTo(...positions[0]);
+
+    for (let i = 1; i < positions.length; i++) {
+        const point = positions[i];
+        ctx.lineTo(...point);
+    }
+    ctx.stroke();
+}
+
 function drawCircleClear(ctx, x, y, radius = 10, stroke = "black", lineWidth = 1) {
     ctx.strokeStyle = stroke;
     ctx.fillStyle = "rgba(0,0,0,1)";
@@ -85,7 +99,7 @@ export {
     drawRectClear,
     drawValue,
     drawGrid,
-    drawLine,
+    drawLine, drawLines,
     drawCircle,
     drawCircleClear,
     getRandomIntInclusive,
