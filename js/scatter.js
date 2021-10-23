@@ -131,10 +131,7 @@ function drawLineofBestFit(ctx, data, yscale, basex, basey, stroke, width) {
     const meanX = data.map(d => d.id).reduce((p, c) => p + c) / data.length;
     const meanY = data.map(d => d.value).reduce((p, c) => p + c) / data.length;
 
-    //console.log(meanX, meanY);
-    // drawValue(ctx, ctx.canvas.width - 100, 10, "Mean X: " + meanX);
-    // drawValue(ctx, ctx.canvas.width - 100, 30, "Mean Y: " + meanY);
-
+    
     //The slope of the line of best fit (m)
     //m = ∑(xi−X)(yi−Y)/∑(xi−X)2
     //m => Sum of (x variation * y variation) / Sum of squares of x variation
@@ -143,14 +140,12 @@ function drawLineofBestFit(ctx, data, yscale, basex, basey, stroke, width) {
 
     const m = sumXVarYVar / sumSquareXVar;
 
-    //Compute the y-intercept of the line
-    //b = Y − mX
+    //Compute the y-intercept of the line: b = Y − mX
     //b => MeanY - m * MeanX
 
     const b = meanY - (m * meanX);
 
-    //the equation of the line
-    //y => mx + b
+    //the equation of the line:  y => mx + b
     let lineCoodinates = [];
 
     lineCoodinates.push([basex, basey - (yscale * b)]);
@@ -160,13 +155,11 @@ function drawLineofBestFit(ctx, data, yscale, basex, basey, stroke, width) {
         lineCoodinates.push([data[x].xpos, y]);
     }
 
-    //console.log(lineCoodinates);
+   
     const equation = "y = " + m.toFixed(1) + "x " + ((b > 0) ? " + " : " ") + b.toFixed(1);
     drawValue(ctx, ctx.canvas.width - 150, 30, equation);
     drawLine(ctx, lineCoodinates[0], lineCoodinates[lineCoodinates.length - 1], stroke, width);
-
-    // drawLines(ctx, lineCoodinates, stroke, "round", width);
-
+    
 }
 
 const control = document.getElementById("nodes");
