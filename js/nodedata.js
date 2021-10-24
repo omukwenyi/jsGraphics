@@ -78,6 +78,15 @@ function ternarytree(n, top) {
     return rootnode;
 }
 
+function randomtree(n, top) {
+    if (n > top - 1) {
+        return null;
+    }
+    var rootnode = new BMember(n + 1, randomtree(2 * n + 1, top), randomtree(2 * n + 2, top));
+    return rootnode;
+}
+
+
 function createGraph(nodes, maxDegree) {
     //Create the adjacency matrix
     let adjMatrix = new Array(nodes).fill(0);
@@ -182,4 +191,4 @@ function distanceToNode(graph, node, destId, visited) {
     return distance;
 }
 
-export { createGraph, binarytree, ternarytree };
+export { createGraph, binarytree, ternarytree, randomtree };
