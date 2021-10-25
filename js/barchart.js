@@ -24,7 +24,7 @@ function draw(bars = 0, useColors = false, showBarValues = false, xAxisText = ""
         drawGrid(ctx, cw, ch, 10, 0.2);
 
         if (bars > 0) {
-            //Axis
+            //Axes
             let baseY = ch - 50;
             let baseX = 100;
             let rightEdge = cw - 50;
@@ -32,14 +32,14 @@ function draw(bars = 0, useColors = false, showBarValues = false, xAxisText = ""
             const bchart = getChartData(bars, useColors);
 
             //X axis
-            drawLine(ctx, [baseX, yTop], [baseX, baseY], "black", 2);
+            drawLine(ctx, [baseX, baseY], [rightEdge, baseY], "black", 2);            
             drawValue(
                 ctx,
                 (baseX + rightEdge) / 2 - ctx.measureText(xAxisText).width / 2,
                 baseY + 40,
                 xAxisText
             );
-
+            
             //Y axis
             let max = bchart[0].value;
             bchart.forEach((item) => {
@@ -47,9 +47,9 @@ function draw(bars = 0, useColors = false, showBarValues = false, xAxisText = ""
                     max = item.value;
                 }
             });
-
-            drawLine(ctx, [baseX, baseY], [rightEdge, baseY], "black", 2);
-
+            
+            drawLine(ctx, [baseX, yTop], [baseX, baseY], "black", 2);
+            
             //Y axis ticks
             let yAxisHeight = baseY - yTop - 20;
             let ticks = 10;
