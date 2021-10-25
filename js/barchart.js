@@ -138,13 +138,14 @@ function draw(bars = 0, useColors = false, showBarValues = false, xAxisText = ""
 
                 if (showBarValues) {
                     let textpos = xpos + (barwidth / 2) - (ctx.measureText(bar.value.toLocaleString()).width / 2);
-                    drawValue(ctx, textpos, ypos - 5, bar.value.toLocaleString());
+                    let textYpos = ypos + (height > 0 ? -6 : 12);
+                    drawValue(ctx, textpos, textYpos, bar.value.toLocaleString());
                 }
                 console.log(height);
                 //X axis bar label
-                let textypos = baseY0 + (height > 0 ? 15 : -15);
+                let textXypos = baseY0 + (height > 0 ? 15 : -15);
 
-                drawValue(ctx, xpos + 10, textypos, bar.id);
+                drawValue(ctx, xpos + 10, textXypos, bar.id);
             }
         }
     }
