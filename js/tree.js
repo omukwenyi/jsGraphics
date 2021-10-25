@@ -69,9 +69,9 @@ function drawT(ctx, root, px, py, direction = null) {
   const level = root.level;
   let angle = 0;
   const ypos =
-    level <= 1 && direction !== "M" ? radius * 2 : level * 60 + radius * 2;
+    level <= 1 && direction !== "M" ? radius * 2 : level * 80 + radius * 2;
   const xpos = (px, direction) => {
-    angle = ((150 - level * 40) / 2) * (Math.PI / 180);
+    angle = ((150 - level * 37) / 2) * (Math.PI / 180);
     if (direction == "L") {
       if (level == 1) {
         return cx / 2;
@@ -148,13 +148,11 @@ function draw(ctx, root, px, py, direction = null) {
   const level = parseInt(Math.log2(root.id));
   const ypos = level * 60 + radius * 2;
   const xpos = (px, direction) => {
-    // let angle = ((180 - level * 30) / 2) * (Math.PI / 180);
-    let displacement = canvas.width/Math.pow(2,level+1);
+
+    let displacement = canvas.width / Math.pow(2, level + 1);
     if (direction == "L") {
-      // return px - 100 * Math.tan(angle);
       return px - displacement;
     } else if (direction == "R") {
-      // return px + 100 * Math.tan(angle);
       return px + displacement;
     } else {
       return cx;
