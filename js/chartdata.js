@@ -48,9 +48,9 @@ function getChartData(n, useColors = false, numericXAxis = false) {
   const barchart = new Array(n);
 
   for (let bar = 0; bar < n; bar++) {
-    let min = -10;
-    let max = 100;
-    let value = parseInt(Math.random() * (max - min) + min) + parseInt(Math.random() * (max - min) + min);
+    let min = 100;
+    let max = 200;
+    let value = parseInt(Math.random() * (max - min) + min);
     let colIndex = parseInt(bar % colours.length);
     let colour = "orangered";
     if (useColors) {
