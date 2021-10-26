@@ -29,27 +29,30 @@ let colours = [
   "OrangeRed",
   "Khaki",
   "orange",
-  "green",
-  "AliceBlue",
-  "blue",
-  "indigo",
-  "violet",
-  "fuchsia",
+  "Chocolate",
+  "Green",
+  "LightSteelBlue",
+  "Blue",
+  "Indigo",
+  "Violet",
+  "Fuchsia",
   "Navy",
   "DarkGreen",
   "DarkSlateGray",
   "Purple",
   "Maroon",
   "Gray",
-  "black",
+  "Pink",
+  "SaddleBrown",
+  "MediumAquaMarine"
 ];
 
 function getChartData(n, useColors = false, numericXAxis = false) {
   const barchart = new Array(n);
 
   for (let bar = 0; bar < n; bar++) {
-    let min = -1000;
-    let max = 1000;
+    let min = 0;
+    let max = 1000000;
     let value = parseInt(Math.random() * (max - min) + min);
     let colIndex = parseInt(bar % colours.length);
     let colour = "orangered";

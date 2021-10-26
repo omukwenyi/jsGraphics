@@ -72,27 +72,73 @@ function draw(bars = 0, useColors = false, showBarValues = false, xAxisText = ""
 
             drawLine(ctx, [baseX, yTop - tickHeight], [baseX, baseY + tickHeight], "black", 2);
 
-            // let rfactor = max < 1000 ? 10 : max < 10000 ? 100 : 1000;
 
-            // let rt = Math.round(tickRange / rfactor) * rfactor;
-            // let adRatio = rt / tickRange;
+            const roundValues = function (span) {
+                if (span < Math.log10(span) <= 3) {
+                    if (span < 100) {
+                        let c = Math.ceil(span / 10);
+                        if (c === 3 || c === 4) {
+                            return 5;
+                        } else if (c > 6) {
+                            return 10;
+                        } else return c;
+                    } else
+                        return 10;
+                } else if (span < Math.log10(span) <= 4) {
+                    return 100;
+                } else if (span < Math.log10(span) <= 5) {
+                    return 1000;
+                } else if (span < Math.log10(span) <= 6) {
+                    return 10000;
+                } else if (span < Math.log10(span) <= 7) {
+                    return 100000;
+                } else if (span < Math.log10(span) <= 8) {
+                    return 1000000;
+                } else if (span < Math.log10(span) <= 9) {
+                    return 10000000;
+                } else if (span < Math.log10(span) <= 10) {
+                    return 100000000;
+                } else if (span < Math.log10(span) <= 11) {
+                    return 1000000000;
+                } else if (span < Math.log10(span) <= 12) {
+                    return 10000000000;
+                }
+            }
+            // let rfactor = max < 1000 ? 10 : max < 10000 ? 100 : 1000;
+            let roundRange = roundValues(range);
+            let roundedTickRange = (tickRange > 1) ? Math.round(tickRange / roundRange) * roundRange : 1;
+            let adRatio = roundedTickRange / tickRange;
 
 
             let baseY0Offset = scaleYValues(zero);
             let baseY0 = baseY - (baseY0Offset * yAxisHeight);
 
-            // console.log(min, max);
-            for (let y = min - tickRange, i = -1; y <= max + tickRange; y += tickRange, i++) {
+            // console.log(baseY0);
 
-                let tickYPos = baseY - i * tickHeight;
+            let rmin = Math.round(min / roundRange) * roundRange;
+            let rmax = Math.round(max / roundRange) * roundRange;
 
-                let yValue = parseFloat(y).toFixed(1);
+            //for (let y = min - tickRange, i = -1; y <= max + tickRange; y += tickRange, i++) {
+            for (let y = rmin - roundedTickRange, i = -1;  y <= rmax + roundedTickRange; y += roundedTickRange, i++) {
+
+                let tickYPos = baseY - i * tickHeight * adRatio;
+                let yValue = parseFloat(y).toFixed(0);
+                console.log(baseY0, tickYPos, yValue);
+
+                if (y === 0) {
+                    baseY0 = tickYPos;
+                }
+
                 // let yValue = parseFloat(scaleYValues(y)).toFixed(2);
                 let ytext = ctx.measureText(yValue);
                 let textWidth = Math.ceil(ytext.width) + 15;
 
                 drawLine(ctx, [baseX - 10, tickYPos], [baseX, tickYPos], "red", 1);
                 drawValue(ctx, baseX - textWidth, tickYPos, yValue);
+
+                if(i >= ticks + 2 ){
+                    break;
+                }
 
             }
 
@@ -109,7 +155,7 @@ function draw(bars = 0, useColors = false, showBarValues = false, xAxisText = ""
             ctx.restore();
 
             //X axis
-            drawLine(ctx, [baseX, baseY0], [rightEdge, baseY0], "green", 2);
+            drawLine(ctx, [baseX, baseY0], [rightEdge, baseY0], "black", 2);
             drawValue(
                 ctx,
                 (baseX + rightEdge) / 2 - ctx.measureText(xAxisText).width / 2,
@@ -123,7 +169,7 @@ function draw(bars = 0, useColors = false, showBarValues = false, xAxisText = ""
             const totalBarWidth = bars * barwidth;
             let gap = (xAxisWidth - totalBarWidth) / (parseInt(bars) + 1);
 
-            
+
 
             for (let i = 0; i < bchart.length; i++) {
                 const bar = bchart[i];
@@ -141,7 +187,7 @@ function draw(bars = 0, useColors = false, showBarValues = false, xAxisText = ""
                     let textYpos = ypos + (height > 0 ? -6 : 12);
                     drawValue(ctx, textpos, textYpos, bar.value.toLocaleString());
                 }
-                console.log(height);
+
                 //X axis bar label
                 let textXypos = baseY0 + (height > 0 ? 15 : -15);
 
