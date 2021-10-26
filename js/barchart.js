@@ -74,7 +74,7 @@ function draw(bars = 0, useColors = false, showBarValues = false, xAxisText = ""
 
 
             const roundValues = function (span) {
-                if (span < Math.log10(span) <= 3) {
+                if (Math.log10(span) <= 3) {
                     if (span < 100) {
                         let c = Math.ceil(span / 10);
                         if (c === 3 || c === 4) {
@@ -84,36 +84,37 @@ function draw(bars = 0, useColors = false, showBarValues = false, xAxisText = ""
                         } else return c;
                     } else
                         return 10;
-                } else if (span < Math.log10(span) <= 4) {
+                } else if (Math.log10(span) <= 4) {
                     return 100;
-                } else if (span < Math.log10(span) <= 5) {
+                } else if (Math.log10(span) <= 5) {
                     return 1000;
-                } else if (span < Math.log10(span) <= 6) {
+                } else if (Math.log10(span) <= 6) {
                     return 10000;
-                } else if (span < Math.log10(span) <= 7) {
+                } else if (Math.log10(span) <= 7) {
                     return 100000;
-                } else if (span < Math.log10(span) <= 8) {
+                } else if (Math.log10(span) <= 8) {
                     return 1000000;
-                } else if (span < Math.log10(span) <= 9) {
+                } else if (Math.log10(span) <= 9) {
                     return 10000000;
-                } else if (span < Math.log10(span) <= 10) {
+                } else if (Math.log10(span) <= 10) {
                     return 100000000;
-                } else if (span < Math.log10(span) <= 11) {
+                } else if (Math.log10(span) <= 11) {
                     return 1000000000;
-                } else if (span < Math.log10(span) <= 12) {
+                } else if (Math.log10(span) <= 12) {
                     return 10000000000;
                 }
             }
-            // let rfactor = max < 1000 ? 10 : max < 10000 ? 100 : 1000;
+           
             let roundRange = roundValues(range);
             let roundedTickRange = (tickRange > 1) ? Math.round(tickRange / roundRange) * roundRange : 1;
             let adRatio = roundedTickRange / tickRange;
 
+            console.log(range, roundRange, roundedTickRange);
 
             let baseY0Offset = scaleYValues(zero);
             let baseY0 = baseY - (baseY0Offset * yAxisHeight);
 
-            // console.log(baseY0);
+            
 
             let rmin = Math.round(min / roundRange) * roundRange;
             let rmax = Math.round(max / roundRange) * roundRange;
@@ -123,7 +124,7 @@ function draw(bars = 0, useColors = false, showBarValues = false, xAxisText = ""
 
                 let tickYPos = baseY - i * tickHeight * adRatio;
                 let yValue = parseFloat(y).toFixed(0);
-                console.log(baseY0, tickYPos, yValue);
+                // console.log(baseY0, tickYPos, yValue);
 
                 if (y === 0) {
                     baseY0 = tickYPos;
