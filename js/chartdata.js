@@ -51,7 +51,7 @@ function getChartData(n, useColors = false, numericXAxis = false) {
   const barchart = new Array(n);
 
   for (let bar = 0; bar < n; bar++) {
-    let min = 0;
+    let min = -20000;
     let max = 10001;
     let value = parseInt(Math.random() * (max - min) + min);
     let colIndex = parseInt(bar % colours.length);

@@ -4,7 +4,7 @@ import {
     drawGrid,
     drawLine,
     drawValue,
-    drawRect
+    drawRect, roundValues, scaleValues
 } from "./common.js";
 import {
     getChartData
@@ -38,12 +38,7 @@ function draw(bars = 0, useColors = false, showBarValues = false, xAxisText = ""
             let yTop = 35;
             const bchart = getChartData(bars, useColors);
 
-            var scaleValues = function (low, high) {
-                return function (value) {
-                    return (value - low) / (high - low);
-                };
-            };
-
+            
             //Y axis
             let max = Math.max(...bchart.map(b => b.value));
             let min = Math.min(...bchart.map(b => b.value));
@@ -71,40 +66,7 @@ function draw(bars = 0, useColors = false, showBarValues = false, xAxisText = ""
             let tickRange = range / ticks;
 
             drawLine(ctx, [baseX, yTop - tickHeight], [baseX, baseY + tickHeight], "black", 2);
-
-
-            const roundValues = function (span) {
-                if (Math.log10(span) <= 3) {
-                    if (span < 100) {
-                        let c = Math.ceil(span / 10);
-                        if (c === 3 || c === 4) {
-                            return 5;
-                        } else if (c > 6) {
-                            return 10;
-                        } else return c;
-                    } else
-                        return 10;
-                } else if (Math.log10(span) <= 4) {
-                    return 100;
-                } else if (Math.log10(span) <= 5) {
-                    return 1000;
-                } else if (Math.log10(span) <= 6) {
-                    return 10000;
-                } else if (Math.log10(span) <= 7) {
-                    return 100000;
-                } else if (Math.log10(span) <= 8) {
-                    return 1000000;
-                } else if (Math.log10(span) <= 9) {
-                    return 10000000;
-                } else if (Math.log10(span) <= 10) {
-                    return 100000000;
-                } else if (Math.log10(span) <= 11) {
-                    return 1000000000;
-                } else if (Math.log10(span) <= 12) {
-                    return 10000000000;
-                }
-            }
-           
+          
             let roundRange = roundValues(range);
             let roundedTickRange = (tickRange > 1) ? Math.round(tickRange / roundRange) * roundRange : 1;
             let adRatio = roundedTickRange / tickRange;

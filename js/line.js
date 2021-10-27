@@ -5,7 +5,7 @@ import {
     drawLine,
     drawValue,
     drawRect,
-    drawLines
+    drawLines, roundValues, scaleValues
 } from "./common.js";
 import {
     getChartData
@@ -36,47 +36,72 @@ function draw(points = 0, xAxisText = "", yAxisText = "", showPoints = true) {
             let baseY = ch - 50;
             let baseX = 100;
             let rightEdge = cw - 50;
-            let yTop = 25;
+            let yTop = 35;
             const lchart = getChartData(points);
-
-            //X axis
-            drawLine(ctx, [baseX, yTop], [baseX, baseY], "black", 2);
-            drawValue(
-                ctx,
-                (baseX + rightEdge) / 2 - ctx.measureText(xAxisText).width / 2,
-                baseY + 40,
-                xAxisText
-            );
+         
 
             //Y axis
-            let max = lchart[0].value;
-            lchart.forEach((item) => {
-                if (item.value > max) {
-                    max = item.value;
-                }
-            });
+            let max = Math.max(...lchart.map(b => b.value));
+            let min = Math.min(...lchart.map(b => b.value));
 
-            drawLine(ctx, [baseX, baseY], [rightEdge, baseY], "black", 2);
+            let zero = 0.0;
+
+            if (max < 0) {
+                max = 0.0;
+                // zero = max;
+            }
+            if (min > 0) {
+                // zero = min;
+                min = 0.0;
+            }
+
+            let range = max - min;
+            var scaleYValues = scaleValues(min, max);
 
             //Y axis ticks
             let yAxisHeight = baseY - yTop - 20;
             let ticks = 10;
-            let majorYRange = yAxisHeight / ticks;
-            let tickRange = max / ticks;
+            let tickHeight = yAxisHeight / ticks;
 
-            let rfactor = max < 1000 ? 10 : max < 10000 ? 100 : 1000;
+            let tickRange = range / ticks;
 
-            let rt = Math.round(tickRange / rfactor) * rfactor;
-            let adRatio = rt / tickRange;
+            drawLine(ctx, [baseX, yTop - tickHeight], [baseX, baseY + tickHeight], "black", 2);
+          
+            let roundRange = roundValues(range);
+            let roundedTickRange = (tickRange > 1) ? Math.round(tickRange / roundRange) * roundRange : 1;
+            let adRatio = roundedTickRange / tickRange;
 
-            for (let y = 0; y <= ticks; y++) {
-                let tickYPos = baseY - y * majorYRange * adRatio;
-                let yValue = parseInt(y * rt).toLocaleString();
+            console.log(range, roundRange, roundedTickRange);
+
+            let baseY0Offset = scaleYValues(zero);
+            let baseY0 = baseY - (baseY0Offset * yAxisHeight);
+
+            
+
+            let rmin = Math.round(min / roundRange) * roundRange;
+            let rmax = Math.round(max / roundRange) * roundRange;
+
+            for (let y = rmin - roundedTickRange, i = -1;  y <= rmax + roundedTickRange; y += roundedTickRange, i++) {
+
+                let tickYPos = baseY - i * tickHeight * adRatio;
+                let yValue = parseFloat(y).toFixed(0);
+                // console.log(baseY0, tickYPos, yValue);
+
+                if (y === 0) {
+                    baseY0 = tickYPos;
+                }
+
+                // let yValue = parseFloat(scaleYValues(y)).toFixed(2);
                 let ytext = ctx.measureText(yValue);
                 let textWidth = Math.ceil(ytext.width) + 15;
 
                 drawLine(ctx, [baseX - 10, tickYPos], [baseX, tickYPos], "red", 1);
                 drawValue(ctx, baseX - textWidth, tickYPos, yValue);
+
+                if(i >= ticks + 2 ){
+                    break;
+                }
+
             }
 
             //Y axis caption
@@ -91,19 +116,29 @@ function draw(points = 0, xAxisText = "", yAxisText = "", showPoints = true) {
 
             ctx.restore();
 
+             //X axis
+            drawLine(ctx, [baseX, baseY0], [rightEdge, baseY0], "black", 2);
+            drawValue(
+                ctx,
+                (baseX + rightEdge) / 2 - ctx.measureText(xAxisText).width / 2,
+                baseY + 40,
+                xAxisText
+            );
+
             let barwidth = 5;
             const xAxisWidth = rightEdge - baseX;
             const totalBarWidth = points * barwidth;
             let gap = (xAxisWidth - totalBarWidth) / (parseInt(points) + 1);
 
             let positions = [];
-            positions.push([baseX, baseY]);
+            positions.push([baseX, baseY0]);
 
             for (let i = 0; i < lchart.length; i++) {
                 const bar = lchart[i];
                 let xpos = baseX + (i + 1) * gap + i * barwidth;
-                let height = bar.value * (yAxisHeight / max);
-                let ypos = baseY - height;
+
+                let ypos = baseY - scaleYValues(bar.value) * yAxisHeight;
+                let height = baseY0 - ypos;
 
                 if (showPoints === true) {
                     drawRect(
@@ -119,9 +154,10 @@ function draw(points = 0, xAxisText = "", yAxisText = "", showPoints = true) {
 
 
                 //X axis data label
-                drawValue(ctx, xpos + 10, baseY + 15, bar.id);
+                drawValue(ctx, xpos + 10, baseY0 + 15, bar.id);
             }
 
+           
             drawLines(ctx, positions, "black", "round", 1);
         }
     }

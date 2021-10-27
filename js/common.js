@@ -1,5 +1,43 @@
 "use strict";
 
+const scaleValues = function (low, high) {
+    return function (value) {
+        return (value - low) / (high - low);
+    };
+};
+
+const roundValues = function (span) {
+                if (Math.log10(span) <= 3) {
+                    if (span < 100) {
+                        let c = Math.ceil(span / 10);
+                        if (c === 3 || c === 4) {
+                            return 5;
+                        } else if (c > 6) {
+                            return 10;
+                        } else return c;
+                    } else
+                        return 10;
+                } else if (Math.log10(span) <= 4) {
+                    return 100;
+                } else if (Math.log10(span) <= 5) {
+                    return 1000;
+                } else if (Math.log10(span) <= 6) {
+                    return 10000;
+                } else if (Math.log10(span) <= 7) {
+                    return 100000;
+                } else if (Math.log10(span) <= 8) {
+                    return 1000000;
+                } else if (Math.log10(span) <= 9) {
+                    return 10000000;
+                } else if (Math.log10(span) <= 10) {
+                    return 100000000;
+                } else if (Math.log10(span) <= 11) {
+                    return 1000000000;
+                } else if (Math.log10(span) <= 12) {
+                    return 10000000000;
+                }
+            }
+
 function drawRect(ctx, x, y, width, height, fill) {
     ctx.fillStyle = fill;
     ctx.fillRect(x, y, width, height);
@@ -60,6 +98,20 @@ function drawLines(ctx, positions, stroke, lineJoin="round", lineWidth=1) {
     ctx.stroke();
 }
 
+function drawSplines(ctx, positions, stroke, lineJoin="round", lineWidth=1) {
+    ctx.lineWidth = lineWidth;
+    ctx.lineJoin = lineJoin;
+    ctx.strokeStyle = stroke;
+    ctx.beginPath();
+    ctx.moveTo(...positions[0]);
+
+    for (let i = 1; i < positions.length; i++) {
+        const point = positions[i];
+        ctx.lineTo(...point);
+    }
+    ctx.stroke();
+}
+
 function drawCircleClear(ctx, x, y, radius = 10, stroke = "black", lineWidth = 1) {
     ctx.strokeStyle = stroke;
     ctx.fillStyle = "rgba(0,0,0,1)";
@@ -103,5 +155,6 @@ export {
     drawCircle,
     drawCircleClear,
     getRandomIntInclusive,
-    drawValueActive, create2DArray
+    drawValueActive, create2DArray,
+    roundValues, scaleValues
 };
