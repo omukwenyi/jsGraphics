@@ -6,6 +6,7 @@ import {
     drawValue,
     drawRect,
     drawLines,
+    drawLineArea,
     roundValues,
     scaleValues,
     drawSplines
@@ -161,7 +162,10 @@ function draw(points = 0, xAxisText = "", yAxisText = "", showPoints = true, typ
                 drawLines(ctx, positions, "black", "round", 1);
             } else if (type === "spline") {
                 drawSplines(ctx, positions, "blue", 2);
+            } else if (type === "linearea") {
+                drawLineArea(ctx, baseY0, positions, "black", "round", 1, "gray");
             }
+
 
         }
     }
@@ -181,7 +185,7 @@ xAxisLabel.onchange = () => {
 
 lineType.onchange = () => {
     draw(parseInt(r), xAxisLabel.value, yAxisLabel.value, showPoints.checked, lineType.value);
-}
+};
 
 const yAxisLabel = document.getElementById("ylabel");
 yAxisLabel.onchange = () => {

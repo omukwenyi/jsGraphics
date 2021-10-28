@@ -102,6 +102,24 @@ function drawLines(ctx, positions, stroke, lineJoin = "round", lineWidth = 1) {
     ctx.stroke();
 }
 
+function drawLineArea(ctx, baseY, positions, stroke, lineJoin = "round", lineWidth = 1, fill="gray") {
+    ctx.lineWidth = lineWidth;
+    ctx.lineJoin = lineJoin;
+    ctx.strokeStyle = stroke;
+    ctx.fillStyle = fill;
+    ctx.beginPath();
+    ctx.moveTo(...positions[0]);
+
+    for (let i = 1; i < positions.length; i++) {
+        const point = positions[i];
+        ctx.lineTo(...point);
+    }
+    ctx.lineTo(positions[positions.length-1][0], baseY);
+    ctx.lineTo(...positions[0]);
+    ctx.stroke();
+    ctx.fill();
+}
+
 function drawSplines(ctx, positions, stroke, lineWidth = 1) {
     const controlPoints = GetCurveControlPoints(positions);
     ctx.strokeStyle = stroke;
@@ -159,7 +177,7 @@ export {
     drawGrid,
     drawLine,
     drawLines,
-    drawSplines,
+    drawSplines, drawLineArea,
     drawCircle,
     drawCircleClear,
     getRandomIntInclusive,
