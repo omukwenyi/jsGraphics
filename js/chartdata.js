@@ -10,6 +10,8 @@ class ChartRecord {
   }
 }
 
+const years = [];
+
 const months = [
   "Jan",
   "Feb",

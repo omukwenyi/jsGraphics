@@ -41,7 +41,7 @@ function draw(points = 0, xAxisText = "", yAxisText = "", showPoints = true, typ
             let baseX = 100;
             let rightEdge = cw - 50;
             let yTop = 35;
-            const lchart = getChartData(points);
+            const lchart = getChartData(points, false, true);
 
 
             //Y axis
@@ -163,7 +163,7 @@ function draw(points = 0, xAxisText = "", yAxisText = "", showPoints = true, typ
             } else if (type === "spline") {
                 drawSplines(ctx, positions, "blue", 2);
             } else if (type === "linearea") {
-                drawLineArea(ctx, baseY0, positions, "black", "round", 1, "gray");
+                drawLineArea(ctx, baseY0, positions, "black", "round", 1, "lightgray");
             }
 
 
