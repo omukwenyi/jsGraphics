@@ -5,13 +5,16 @@ import {
     drawLine,
     drawValue,
     drawRect,
-    drawLines, roundValues, scaleValues
+    drawLines,
+    roundValues,
+    scaleValues,
+    drawSplines
 } from "./common.js";
 import {
     getChartData
 } from "./chartdata.js";
 
-function draw(points = 0, xAxisText = "", yAxisText = "", showPoints = true) {
+function draw(points = 0, xAxisText = "", yAxisText = "", showPoints = true, type = "line") {
     console.clear();
     const canvas = document.querySelector("#canvas");
     const header = document.querySelector("#title");
@@ -38,7 +41,7 @@ function draw(points = 0, xAxisText = "", yAxisText = "", showPoints = true) {
             let rightEdge = cw - 50;
             let yTop = 35;
             const lchart = getChartData(points);
-         
+
 
             //Y axis
             let max = Math.max(...lchart.map(b => b.value));
@@ -66,26 +69,23 @@ function draw(points = 0, xAxisText = "", yAxisText = "", showPoints = true) {
             let tickRange = range / ticks;
 
             drawLine(ctx, [baseX, yTop - tickHeight], [baseX, baseY + tickHeight], "black", 2);
-          
+
             let roundRange = roundValues(range);
             let roundedTickRange = (tickRange > 1) ? Math.round(tickRange / roundRange) * roundRange : 1;
             let adRatio = roundedTickRange / tickRange;
 
-            console.log(range, roundRange, roundedTickRange);
-
             let baseY0Offset = scaleYValues(zero);
             let baseY0 = baseY - (baseY0Offset * yAxisHeight);
 
-            
+
 
             let rmin = Math.round(min / roundRange) * roundRange;
             let rmax = Math.round(max / roundRange) * roundRange;
 
-            for (let y = rmin - roundedTickRange, i = -1;  y <= rmax + roundedTickRange; y += roundedTickRange, i++) {
+            for (let y = rmin - roundedTickRange, i = -1; y <= rmax + roundedTickRange; y += roundedTickRange, i++) {
 
                 let tickYPos = baseY - i * tickHeight * adRatio;
                 let yValue = parseFloat(y).toFixed(0);
-                // console.log(baseY0, tickYPos, yValue);
 
                 if (y === 0) {
                     baseY0 = tickYPos;
@@ -98,7 +98,7 @@ function draw(points = 0, xAxisText = "", yAxisText = "", showPoints = true) {
                 drawLine(ctx, [baseX - 10, tickYPos], [baseX, tickYPos], "red", 1);
                 drawValue(ctx, baseX - textWidth, tickYPos, yValue);
 
-                if(i >= ticks + 2 ){
+                if (i >= ticks + 2) {
                     break;
                 }
 
@@ -116,7 +116,7 @@ function draw(points = 0, xAxisText = "", yAxisText = "", showPoints = true) {
 
             ctx.restore();
 
-             //X axis
+            //X axis
             drawLine(ctx, [baseX, baseY0], [rightEdge, baseY0], "black", 2);
             drawValue(
                 ctx,
@@ -157,11 +157,17 @@ function draw(points = 0, xAxisText = "", yAxisText = "", showPoints = true) {
                 drawValue(ctx, xpos + 10, baseY0 + 15, bar.id);
             }
 
-           
-            drawLines(ctx, positions, "black", "round", 1);
+            if (type === "line") {
+                drawLines(ctx, positions, "black", "round", 1);
+            } else if (type === "spline") {
+                drawSplines(ctx, positions, "blue", 2);
+            }
+
         }
     }
 }
+
+const lineType = document.getElementById("type");
 
 const control = document.getElementById("nodes");
 let r = parseInt(control.value); // points
@@ -173,21 +179,25 @@ xAxisLabel.onchange = () => {
     draw(parseInt(r), xAxisLabel.value, yAxisLabel.value, showPoints.checked);
 };
 
+lineType.onchange = () => {
+    draw(parseInt(r), xAxisLabel.value, yAxisLabel.value, showPoints.checked, lineType.value);
+}
+
 const yAxisLabel = document.getElementById("ylabel");
 yAxisLabel.onchange = () => {
-    draw(parseInt(r), xAxisLabel.value, yAxisLabel.value, showPoints.checked);
+    draw(parseInt(r), xAxisLabel.value, yAxisLabel.value, showPoints.checked, lineType.value);
 };
 
 
 showPoints.onchange = () => {
-    draw(parseInt(r), xAxisLabel.value, yAxisLabel.value, showPoints.checked);
+    draw(parseInt(r), xAxisLabel.value, yAxisLabel.value, showPoints.checked, lineType.value);
 };
 
 
 const controlOut = document.getElementById("nodes-output");
 control.oninput = () => {
     controlOut.textContent = r = control.value;
-    draw(parseInt(r), xAxisLabel.value, yAxisLabel.value, showPoints.checked);
+    draw(parseInt(r), xAxisLabel.value, yAxisLabel.value, showPoints.checked, lineType.value);
 };
 
 window.onresize = () => {
@@ -198,7 +208,7 @@ window.onresize = () => {
     canvas.width = window.innerWidth - 50;
     canvas.height = window.innerHeight - headerHeight - 80;
 
-    draw(parseInt(r), xAxisLabel.value, yAxisLabel.value, showPoints.checked);
+    draw(parseInt(r), xAxisLabel.value, yAxisLabel.value, showPoints.checked, lineType.value);
 };
 
-draw(parseInt(r), xAxisLabel.value, yAxisLabel.value, showPoints.checked);
+draw(parseInt(r), xAxisLabel.value, yAxisLabel.value, showPoints.checked, lineType.value);

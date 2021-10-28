@@ -1,5 +1,9 @@
 "use strict";
 
+import {
+    GetCurveControlPoints
+} from "./bezier.js";
+
 const scaleValues = function (low, high) {
     return function (value) {
         return (value - low) / (high - low);
@@ -7,36 +11,36 @@ const scaleValues = function (low, high) {
 };
 
 const roundValues = function (span) {
-                if (Math.log10(span) <= 3) {
-                    if (span < 100) {
-                        let c = Math.ceil(span / 10);
-                        if (c === 3 || c === 4) {
-                            return 5;
-                        } else if (c > 6) {
-                            return 10;
-                        } else return c;
-                    } else
-                        return 10;
-                } else if (Math.log10(span) <= 4) {
-                    return 100;
-                } else if (Math.log10(span) <= 5) {
-                    return 1000;
-                } else if (Math.log10(span) <= 6) {
-                    return 10000;
-                } else if (Math.log10(span) <= 7) {
-                    return 100000;
-                } else if (Math.log10(span) <= 8) {
-                    return 1000000;
-                } else if (Math.log10(span) <= 9) {
-                    return 10000000;
-                } else if (Math.log10(span) <= 10) {
-                    return 100000000;
-                } else if (Math.log10(span) <= 11) {
-                    return 1000000000;
-                } else if (Math.log10(span) <= 12) {
-                    return 10000000000;
-                }
-            }
+    if (Math.log10(span) <= 3) {
+        if (span < 100) {
+            let c = Math.ceil(span / 10);
+            if (c === 3 || c === 4) {
+                return 5;
+            } else if (c > 6) {
+                return 10;
+            } else return c;
+        } else
+            return 10;
+    } else if (Math.log10(span) <= 4) {
+        return 100;
+    } else if (Math.log10(span) <= 5) {
+        return 1000;
+    } else if (Math.log10(span) <= 6) {
+        return 10000;
+    } else if (Math.log10(span) <= 7) {
+        return 100000;
+    } else if (Math.log10(span) <= 8) {
+        return 1000000;
+    } else if (Math.log10(span) <= 9) {
+        return 10000000;
+    } else if (Math.log10(span) <= 10) {
+        return 100000000;
+    } else if (Math.log10(span) <= 11) {
+        return 1000000000;
+    } else if (Math.log10(span) <= 12) {
+        return 10000000000;
+    }
+};
 
 function drawRect(ctx, x, y, width, height, fill) {
     ctx.fillStyle = fill;
@@ -84,7 +88,7 @@ function drawLine(ctx, begin, end, stroke = "black", width = 1) {
     ctx.stroke();
 }
 
-function drawLines(ctx, positions, stroke, lineJoin="round", lineWidth=1) {
+function drawLines(ctx, positions, stroke, lineJoin = "round", lineWidth = 1) {
     ctx.lineWidth = lineWidth;
     ctx.lineJoin = lineJoin;
     ctx.strokeStyle = stroke;
@@ -98,18 +102,20 @@ function drawLines(ctx, positions, stroke, lineJoin="round", lineWidth=1) {
     ctx.stroke();
 }
 
-function drawSplines(ctx, positions, stroke, lineJoin="round", lineWidth=1) {
-    ctx.lineWidth = lineWidth;
-    ctx.lineJoin = lineJoin;
+function drawSplines(ctx, positions, stroke, lineWidth = 1) {
+    const controlPoints = GetCurveControlPoints(positions);
     ctx.strokeStyle = stroke;
-    ctx.beginPath();
-    ctx.moveTo(...positions[0]);
+    ctx.lineWidth = lineWidth;
 
-    for (let i = 1; i < positions.length; i++) {
-        const point = positions[i];
-        ctx.lineTo(...point);
+    for (let i = 0; i < positions.length-1; i++) {
+        const k = positions[i];
+        const k1 = positions[i+1];
+        ctx.beginPath();
+        ctx.moveTo(k[0], k[1]);
+        ctx.bezierCurveTo(controlPoints.P1[i][0], controlPoints.P1[i][1], controlPoints.P2[i][0], controlPoints.P2[i][1], k1[0], k1[1]);
+        ctx.stroke();
     }
-    ctx.stroke();
+
 }
 
 function drawCircleClear(ctx, x, y, radius = 10, stroke = "black", lineWidth = 1) {
@@ -151,10 +157,14 @@ export {
     drawRectClear,
     drawValue,
     drawGrid,
-    drawLine, drawLines,
+    drawLine,
+    drawLines,
+    drawSplines,
     drawCircle,
     drawCircleClear,
     getRandomIntInclusive,
-    drawValueActive, create2DArray,
-    roundValues, scaleValues
+    drawValueActive,
+    create2DArray,
+    roundValues,
+    scaleValues
 };

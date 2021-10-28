@@ -17,8 +17,8 @@
 
         <div class="row">
             <label for="nodes">Data Points: </label>
-            <input name="nodes" type="range" id="nodes" min=2 max=50 value=10 style="width: 80%;">
-            <label for="nodes" id="nodes-output">10</label>
+            <input name="nodes" type="range" id="nodes" min=2 max=50 value=2 style="width: 80%;">
+            <label for="nodes" id="nodes-output">2</label>
         </div>
 
         <div id="chartoptions">
@@ -30,6 +30,11 @@
                 
                 <input type="checkbox" id="showpoints" checked>
                 <label for="showpoints">Show Data Points</label>
+
+                <select id="type">
+                    <option value="line">Line</option>
+                    <option value="spline">Spline</option>
+                </select>
             </div>
         </div>
     </div>
